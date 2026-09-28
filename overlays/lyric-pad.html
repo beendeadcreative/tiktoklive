@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1000 × 470 -->
+  <title>Lyric Pad</title>
+  <link rel="stylesheet" href="lib/overlay.css">
+  <style>
+    body { width: 1000px; height: 470px; padding: 6px; }
+    .card { height: 100%; padding: 24px 32px; display: flex; flex-direction: column; }
+    .head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .head .section { color: var(--brand-primary); }
+    .head .song { margin-left: auto; font-size: 22px; color: var(--brand-ink-dim); font-weight: 600; }
+    .lines {
+      flex: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;
+      font-size: 40px; font-weight: 600; line-height: 1.28;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 70px);
+              mask-image: linear-gradient(to bottom, transparent 0, #000 70px);
+    }
+    .line { color: var(--brand-ink-dim); min-height: 1.28em; }
+    .line.current { color: var(--brand-ink); }
+    .line.current::after {
+      content: ''; display: inline-block; width: 4px; height: 0.95em; margin-left: 6px;
+      vertical-align: -0.12em; background: var(--brand-primary); animation: pulse 1s steps(1) infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="card fade hidden" id="card">
+    <div class="head">
+      <div class="eyebrow">Lyrics</div>
+      <div class="eyebrow section" id="section"></div>
+      <div class="song" id="song"></div>
+    </div>
+    <div class="lines" id="lines"></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="lib/obs-bus.js"></script>
+  <script src="lib/overlay.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = StudioOverlay.esc;
+
+    StudioOverlay({
+      render(s) {
+        const text = (s.lyrics || '').replace(/\s+$/, '');
+        $('card').classList.toggle('hidden', !text);
+        const active = (s.sections || []).find((sec) => sec.status === 'active');
+        $('section').textContent = active ? '· ' + active.label : '';
+        $('song').textContent = s.song || '';
+        const lines = text.split('\n').slice(-12);
+        $('lines').innerHTML = lines
+          .map((l, i) => `<div class="line${i === lines.length - 1 ? ' current' : ''}">${esc(l)}</div>`)
+          .join('');
+      },
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1000 × 640 -->
+  <title>A/B Vote</title>
+  <link rel="stylesheet" href="lib/overlay.css">
+  <style>
+    body { width: 1000px; height: 640px; padding: 6px; }
+    .card { height: 100%; padding: 30px 34px; display: flex; flex-direction: column; gap: 22px; }
+    .question { font-size: 54px; }
+    .hint { margin-top: -10px; font-size: 26px; color: var(--brand-ink-dim); }
+    .hint b { color: var(--brand-ink); }
+    .options { flex: 1; display: flex; flex-direction: column; gap: 18px; justify-content: center; }
+    .opt {
+      --c: var(--brand-primary);
+      position: relative; overflow: hidden; border-radius: var(--brand-radius-sm);
+      border: 2px solid var(--brand-panel-border); background: rgba(255, 255, 255, 0.04);
+      padding: 22px 26px; display: flex; align-items: center; gap: 20px;
+      transition: border-color 0.4s, transform 0.4s;
+    }
+    .opt.b { --c: var(--brand-secondary); }
+    .opt .bar {
+      position: absolute; inset: 0 auto 0 0; width: 0;
+      background: color-mix(in srgb, var(--c) 30%, transparent);
+      transition: width 0.6s cubic-bezier(.2, .8, .2, 1);
+    }
+    .opt > * { position: relative; }
+    .letter {
+      flex: none; width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center;
+      background: var(--c); color: #111; font-family: var(--brand-font-display); font-size: 40px; font-weight: 700;
+    }
+    .label { font-size: 38px; font-weight: 700; flex: 1; }
+    .pct { font-family: var(--brand-font-mono); font-size: 36px; font-weight: 700; }
+    .opt.win { border-color: var(--c); transform: scale(1.02); }
+    .opt.win .label::after {
+      content: 'WINNER'; margin-left: 14px; vertical-align: middle; font-size: 20px; letter-spacing: .12em;
+      padding: 4px 10px; border-radius: 8px; background: var(--brand-tertiary); color: #111;
+    }
+    .opt.lose { opacity: 0.45; }
+    .total { font-family: var(--brand-font-mono); font-size: 22px; color: var(--brand-ink-dim); text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="card fade hidden" id="card">
+    <div class="eyebrow">Chat decides</div>
+    <div class="display question" id="question"></div>
+    <div class="hint">Type <b>A</b> or <b>B</b> in chat</div>
+    <div class="options">
+      <div class="opt a" id="optA"><div class="bar"></div><div class="letter">A</div><div class="label"></div><div class="pct"></div></div>
+      <div class="opt b" id="optB"><div class="bar"></div><div class="letter">B</div><div class="label"></div><div class="pct"></div></div>
+    </div>
+    <div class="total" id="total"></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="lib/obs-bus.js"></script>
+  <script src="lib/overlay.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function paint(el, label, count, total, win, lose) {
+      const pct = total ? Math.round((count / total) * 100) : 0;
+      el.querySelector('.label').textContent = label;
+      el.querySelector('.pct').textContent = total ? pct + '%' : '';
+      el.querySelector('.bar').style.width = pct + '%';
+      el.classList.toggle('win', win);
+      el.classList.toggle('lose', lose);
+    }
+
+    StudioOverlay({
+      render(s) {
+        const v = s.vote || {};
+        $('card').classList.toggle('hidden', !v.active);
+        $('question').textContent = v.question || '';
+        const a = +v.countA || 0;
+        const b = +v.countB || 0;
+        const total = a + b;
+        const reveal = !!v.reveal && a !== b;
+        paint($('optA'), v.a || 'Option A', a, total, reveal && a > b, reveal && a < b);
+        paint($('optB'), v.b || 'Option B', b, total, reveal && b > a, reveal && b < a);
+        $('total').textContent = total ? `${total} vote${total === 1 ? '' : 's'}` : '';
+      },
+    });
+  </script>
+</body>
+</html>

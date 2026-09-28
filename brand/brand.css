@@ -1,0 +1,39 @@
+/* ─────────────────────────────────────────────────────────────
+   YOUR BRAND — the only file you need to edit to re-skin everything.
+   Every overlay, full-screen scene and the control panel read these.
+   Swap the hex values, fonts and (optionally) drop logo.png next to
+   this file. Reload browser sources in OBS to see changes.
+   ───────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  /* Core palette (placeholders — replace with your brand colors) */
+  --brand-primary: #ff6b4a;   /* main accent: highlights, active section, REC */
+  --brand-secondary: #4fd1c5; /* second accent: progress, vote option B */
+  --brand-tertiary: #ffd166;  /* small highlights, winner badges */
+
+  /* Surfaces */
+  --brand-bg: #111014;        /* full-screen scene background */
+  --brand-bg-2: #1c1a22;      /* gradient partner for the background */
+  --brand-panel: rgba(17, 16, 20, 0.78); /* card fill over camera/DAW */
+  --brand-panel-border: rgba(255, 255, 255, 0.10);
+
+  /* Text */
+  --brand-ink: #f6f1e9;
+  --brand-ink-dim: rgba(246, 241, 233, 0.62);
+
+  /* Status */
+  --brand-rec: #ff3b3b;
+
+  /* Type */
+  --brand-font-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --brand-font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --brand-font-mono: 'JetBrains Mono', Menlo, monospace;
+
+  /* Shape */
+  --brand-radius: 28px;
+  --brand-radius-sm: 14px;
+  --brand-blur: 18px;         /* frosted-glass strength on cards; 0 = solid */
+  --brand-grain: 0.07;        /* film grain on full-screen scenes; 0 = off */
+}

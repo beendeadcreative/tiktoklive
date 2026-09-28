@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1000 × 190 -->
+  <title>Keys</title>
+  <link rel="stylesheet" href="lib/overlay.css">
+  <style>
+    body { width: 1000px; height: 190px; padding: 6px; }
+    .card { height: 100%; padding: 14px 18px; display: flex; gap: 18px; align-items: stretch; }
+    .info { flex: none; width: 190px; display: flex; flex-direction: column; justify-content: center; }
+    .chord { font-size: 60px; color: var(--brand-primary); min-height: 62px; white-space: nowrap; }
+    .notes { font-family: var(--brand-font-mono); font-size: 20px; color: var(--brand-ink-dim); min-height: 24px; white-space: nowrap; overflow: hidden; }
+    .kb { position: relative; flex: 1; border-radius: 10px; overflow: hidden; }
+    .w, .b { position: absolute; top: 0; transition: background 0.06s; }
+    .w { height: 100%; background: #f4f1ea; border-right: 1px solid #bbb6ad; border-radius: 0 0 6px 6px; }
+    .b { height: 60%; background: #16151a; border-radius: 0 0 5px 5px; z-index: 1; }
+    .w.on { background: var(--brand-primary); }
+    .b.on { background: var(--brand-primary); filter: brightness(0.8); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="info">
+      <div class="eyebrow">Playing</div>
+      <div class="display chord" id="chord"></div>
+      <div class="notes" id="notes"></div>
+    </div>
+    <div class="kb" id="kb"></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="lib/obs-bus.js"></script>
+  <script src="lib/music.js"></script>
+  <script src="lib/overlay.js"></script>
+  <script>
+    // Three octaves shown; shifts automatically to follow what you play.
+    const OCTAVES = 3;
+    let low = 48; // C3
+    const kb = document.getElementById('kb');
+    const keyEls = new Map();
+
+    function build() {
+      kb.innerHTML = '';
+      keyEls.clear();
+      const whites = [];
+      for (let n = low; n < low + OCTAVES * 12; n++) if (!StudioMusic.isBlack(n)) whites.push(n);
+      const w = 100 / whites.length;
+      let wi = 0;
+      for (let n = low; n < low + OCTAVES * 12; n++) {
+        const el = document.createElement('div');
+        if (StudioMusic.isBlack(n)) {
+          el.className = 'b';
+          el.style.left = `calc(${wi * w}% - ${w * 0.3}%)`;
+          el.style.width = w * 0.6 + '%';
+        } else {
+          el.className = 'w';
+          el.style.left = wi * w + '%';
+          el.style.width = w + '%';
+          wi++;
+        }
+        kb.appendChild(el);
+        keyEls.set(n, el);
+      }
+    }
+    build();
+
+    function showNotes(notes) {
+      if (notes.length) {
+        const min = Math.min(...notes);
+        const max = Math.max(...notes);
+        const top = low + OCTAVES * 12 - 1;
+        if (min < low || max > top) {
+          low = Math.max(0, Math.floor(min / 12) * 12);
+          build();
+        }
+      }
+      const held = new Set(notes);
+      for (const [n, el] of keyEls) el.classList.toggle('on', held.has(n));
+      document.getElementById('chord').textContent = StudioMusic.chordName(notes);
+      document.getElementById('notes').textContent = [...notes].sort((a, b) => a - b).map(StudioMusic.pitchName).join(' ');
+    }
+
+    StudioOverlay({ render() {}, onNotes: showNotes });
+  </script>
+</body>
+</html>

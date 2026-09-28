@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1080 × 1920 -->
+  <title>Starting Soon</title>
+  <link rel="stylesheet" href="lib/screen.css">
+  <style>
+    .countdown { font-family: var(--brand-font-mono); font-size: 150px; font-weight: 700; color: var(--brand-ink); letter-spacing: -0.03em; }
+    .song-card { padding: 30px 34px; }
+    .song-card .display { font-size: 60px; margin-top: 10px; }
+    .song-card .meta { margin-top: 10px; font-family: var(--brand-font-mono); font-size: 26px; color: var(--brand-ink-dim); }
+  </style>
+</head>
+<body>
+  <div class="safe">
+    <img class="logo" src="../brand/logo.png" onerror="this.remove()" alt="">
+    <div class="handle" id="handle"></div>
+    <div class="display big">Starting<br>soon</div>
+    <div class="countdown" id="countdown"></div>
+    <div class="rule"></div>
+    <div class="sub" id="plan"></div>
+    <div class="card song-card" id="songCard">
+      <div class="eyebrow">On the bench tonight</div>
+      <div class="display" id="song"></div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="lib/obs-bus.js"></script>
+  <script src="lib/overlay.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    StudioOverlay({
+      render(s) {
+        $('handle').textContent = s.handle || '';
+        $('plan').textContent = s.plan || '';
+        $('songCard').style.display = s.song ? '' : 'none';
+        $('song').textContent = s.song || '';
+        $('meta').textContent = [s.bpm && s.bpm + ' BPM', s.key, s.stage].filter(Boolean).join('  ·  ');
+      },
+      tick(s) {
+        const left = (s.countdownTo || 0) - Date.now();
+        $('countdown').textContent = s.countdownTo ? (left > 0 ? StudioOverlay.clock(left) : 'Any second…') : '';
+      },
+    });
+  </script>
+</body>
+</html>

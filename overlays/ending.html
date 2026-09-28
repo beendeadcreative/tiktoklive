@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1080 × 1920 -->
+  <title>Ending</title>
+  <link rel="stylesheet" href="lib/screen.css">
+  <style>
+    .recap { padding: 30px 34px; }
+    .recap .sub { margin-top: 12px; font-size: 34px; }
+    .next { padding: 26px 34px; border-left: 8px solid var(--brand-primary); }
+    .next .display { font-size: 46px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="safe">
+    <img class="logo" src="../brand/logo.png" onerror="this.remove()" alt="">
+    <div class="display big">Thanks for<br>hanging out</div>
+    <div class="card recap" id="recapCard">
+      <div class="eyebrow">Tonight we</div>
+      <div class="sub" id="recap"></div>
+    </div>
+    <div class="card next" id="nextCard">
+      <div class="eyebrow">Next session</div>
+      <div class="display" id="next"></div>
+    </div>
+    <div class="sub">Follow <b id="handle"></b> for part two</div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="lib/obs-bus.js"></script>
+  <script src="lib/overlay.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    StudioOverlay({
+      render(s) {
+        $('handle').textContent = s.handle || '';
+        $('recapCard').style.display = s.recap ? '' : 'none';
+        $('recap').textContent = s.recap || '';
+        $('nextCard').style.display = s.nextStream ? '' : 'none';
+        $('next').textContent = s.nextStream || '';
+      },
+    });
+  </script>
+</body>
+</html>

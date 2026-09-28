@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Studio Live Control</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header>
+    <div class="brand">Studio Live</div>
+    <div class="status" id="status"><i></i><span>Connecting…</span></div>
+    <details class="conn">
+      <summary>OBS connection</summary>
+      <label>WebSocket URL <input id="obsUrl"></label>
+      <label>Password <input id="obsPassword" type="password" placeholder="blank if auth is off"></label>
+      <button id="reconnect">Save &amp; reconnect</button>
+      <button id="build" class="ghost">Build scenes in OBS</button>
+    </details>
+  </header>
+
+  <main>
+    <section class="wide">
+      <h2>Scenes <small>keys 1–9</small></h2>
+      <div class="scenes" id="scenes"><p class="muted">Connect to OBS to see scenes.</p></div>
+    </section>
+
+    <section>
+      <h2>Session</h2>
+      <div class="grid2">
+        <label class="span2">Song <input data-k="song" placeholder="Working title"></label>
+        <label>Version <input data-k="version" placeholder="Demo v1"></label>
+        <label>Stage
+          <select data-k="stage">
+            <option>Writing</option><option>Tracking</option><option>Arranging</option>
+            <option>Sound design</option><option>Mixing</option><option>Listening</option>
+          </select>
+        </label>
+        <label>BPM <input data-k="bpm" inputmode="numeric"></label>
+        <label>Key <input data-k="key" placeholder="F# minor"></label>
+        <label>Time sig <input data-k="timeSig"></label>
+        <label>Handle <input data-k="handle" placeholder="@you"></label>
+      </div>
+      <div class="row">
+        <button id="rec" class="toggle">● REC</button>
+        <button id="timerStart">Start timer</button>
+        <button id="timerReset" class="ghost">Reset timer</button>
+        <span class="mono" id="timer"></span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Song map <small>click to cycle todo → active → done</small></h2>
+      <div class="sections" id="sections"></div>
+      <div class="row">
+        <input id="newSection" placeholder="Add section (e.g. Pre-chorus)">
+        <button id="addSection">Add</button>
+        <button id="nextSection" class="accent">Next section →</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Lyric pad <small>updates live on the Writing scene</small></h2>
+      <textarea data-k="lyrics" rows="9" placeholder="Type lyrics here while you write…"></textarea>
+    </section>
+
+    <section>
+      <h2>A/B vote</h2>
+      <label>Question <input data-k="vote.question" placeholder="Which snare for the chorus?"></label>
+      <div class="vote">
+        <div>
+          <label>Option A <input data-k="vote.a"></label>
+          <div class="count"><button data-vote="countA" data-d="-1">−</button><b id="countA">0</b><button data-vote="countA" data-d="1">+</button></div>
+        </div>
+        <div>
+          <label>Option B <input data-k="vote.b"></label>
+          <div class="count"><button data-vote="countB" data-d="-1">−</button><b id="countB">0</b><button data-vote="countB" data-d="1">+</button></div>
+        </div>
+      </div>
+      <div class="row">
+        <button id="voteShow" class="toggle">Show vote</button>
+        <button id="voteReveal" class="toggle">Reveal winner</button>
+        <button id="voteReset" class="ghost">Reset</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Full-screen scenes</h2>
+      <label>Starting soon — tonight's plan <input data-k="plan" placeholder="Finishing the chorus + picking drums with chat"></label>
+      <div class="row">
+        <input id="countMin" type="number" min="1" value="5" class="short"> min
+        <button id="countStart">Start countdown</button>
+        <button id="countClear" class="ghost">Clear</button>
+      </div>
+      <label>BRB message <input data-k="brbText" placeholder="Bouncing the chorus — back in 2"></label>
+      <label>Ending — recap <input data-k="recap" placeholder="Wrote verse 2 · picked the snare"></label>
+      <label>Ending — next stream <input data-k="nextStream" placeholder="Thursday 8pm ET — mixing night"></label>
+    </section>
+
+    <section>
+      <h2>MIDI <small>Chrome / Edge only</small></h2>
+      <div class="row">
+        <button id="midiEnable">Enable MIDI</button>
+        <select id="midiInput"><option value="">All inputs</option></select>
+      </div>
+      <label class="check"><input type="checkbox" id="midiPc"> Program Change 0–8 switches scenes 1–9 (foot switch / controller)</label>
+      <div class="notes"><span id="chord" class="chord"></span> <span id="notes" class="mono muted">No notes</span></div>
+    </section>
+
+    <section class="wide">
+      <h2>Log</h2>
+      <pre id="log"></pre>
+    </section>
+  </main>
+
+  <script src="../overlays/config.js"></script>
+  <script src="../overlays/lib/obs-bus.js"></script>
+  <script src="../overlays/lib/music.js"></script>
+  <script src="scenes.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>
