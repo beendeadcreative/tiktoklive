@@ -41,6 +41,7 @@ h2 small { font: 400 12px var(--brand-font-body); letter-spacing: 0; text-transf
 
 label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--brand-ink-dim); }
 label.check { flex-direction: row; align-items: center; gap: 8px; }
+label > input:not([type=checkbox]), label > select { width: 100%; }
 input, select, textarea {
   font: inherit; color: var(--brand-ink); background: rgba(255, 255, 255, 0.5);
   border: 1px solid var(--brand-panel-border); border-radius: 8px; padding: 8px 10px; min-width: 0;
