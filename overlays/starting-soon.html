@@ -6,13 +6,14 @@
   <title>Starting Soon</title>
   <link rel="stylesheet" href="lib/screen.css">
   <style>
-    .countdown { font-family: var(--brand-font-mono); font-size: 150px; font-weight: 700; color: var(--brand-ink); letter-spacing: -0.03em; }
+    .countdown { font-family: var(--brand-font-label); font-size: 170px; font-weight: 600; line-height: 1; color: var(--brand-ink); font-variant-numeric: tabular-nums; }
     .song-card { padding: 30px 34px; }
     .song-card .display { font-size: 60px; margin-top: 10px; }
-    .song-card .meta { margin-top: 10px; font-family: var(--brand-font-mono); font-size: 26px; color: var(--brand-ink-dim); }
+    .song-card .meta { margin-top: 10px; font-family: var(--brand-font-label); font-size: 28px; letter-spacing: 0.04em; color: var(--brand-ink-dim); }
   </style>
 </head>
 <body>
+  <div class="frame"></div>
   <div class="safe">
     <img class="logo" src="../brand/logo.png" onerror="this.remove()" alt="">
     <div class="handle" id="handle"></div>

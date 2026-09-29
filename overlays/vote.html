@@ -10,35 +10,35 @@
     .card { height: 100%; padding: 30px 34px; display: flex; flex-direction: column; gap: 22px; }
     .question { font-size: 54px; }
     .hint { margin-top: -10px; font-size: 26px; color: var(--brand-ink-dim); }
-    .hint b { color: var(--brand-ink); }
+    .hint b { color: var(--brand-primary); }
     .options { flex: 1; display: flex; flex-direction: column; gap: 18px; justify-content: center; }
     .opt {
       --c: var(--brand-primary);
       position: relative; overflow: hidden; border-radius: var(--brand-radius-sm);
-      border: 2px solid var(--brand-panel-border); background: rgba(255, 255, 255, 0.04);
+      border: 2px solid var(--brand-panel-border); background: rgba(255, 255, 255, 0.25);
       padding: 22px 26px; display: flex; align-items: center; gap: 20px;
       transition: border-color 0.4s, transform 0.4s;
     }
     .opt.b { --c: var(--brand-secondary); }
     .opt .bar {
       position: absolute; inset: 0 auto 0 0; width: 0;
-      background: color-mix(in srgb, var(--c) 30%, transparent);
+      background: color-mix(in srgb, var(--c) 38%, transparent);
       transition: width 0.6s cubic-bezier(.2, .8, .2, 1);
     }
     .opt > * { position: relative; }
     .letter {
       flex: none; width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center;
-      background: var(--c); color: #111; font-family: var(--brand-font-display); font-size: 40px; font-weight: 700;
+      background: var(--c); color: var(--brand-on-primary); font-family: var(--brand-font-display); font-style: var(--brand-display-style); font-size: 40px; font-weight: var(--brand-display-weight);
     }
-    .label { font-size: 38px; font-weight: 700; flex: 1; }
-    .pct { font-family: var(--brand-font-mono); font-size: 36px; font-weight: 700; }
+    .label { font-size: 38px; font-weight: 700; flex: 1; color: var(--brand-ink); }
+    .pct { font-family: var(--brand-font-label); font-size: 40px; font-weight: 600; color: var(--brand-ink); }
     .opt.win { border-color: var(--c); transform: scale(1.02); }
     .opt.win .label::after {
       content: 'WINNER'; margin-left: 14px; vertical-align: middle; font-size: 20px; letter-spacing: .12em;
-      padding: 4px 10px; border-radius: 8px; background: var(--brand-tertiary); color: #111;
+      padding: 4px 10px; border-radius: 6px; background: var(--brand-tertiary); color: var(--brand-on-primary); font-family: var(--brand-font-label); font-weight: 600;
     }
     .opt.lose { opacity: 0.45; }
-    .total { font-family: var(--brand-font-mono); font-size: 22px; color: var(--brand-ink-dim); text-align: right; }
+    .total { font-family: var(--brand-font-label); font-size: 22px; color: var(--brand-ink-dim); text-align: right; }
   </style>
 </head>
 <body>

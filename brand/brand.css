@@ -1,39 +1,54 @@
 /* ─────────────────────────────────────────────────────────────
-   YOUR BRAND — the only file you need to edit to re-skin everything.
-   Every overlay, full-screen scene and the control panel read these.
-   Swap the hex values, fonts and (optionally) drop logo.png next to
-   this file. Reload browser sources in OBS to see changes.
+   BEEN DEAD CREATIVE — brand tokens.
+   The only file you need to edit to re-skin everything: every overlay,
+   full-screen scene and the control panel read these. Reload browser
+   sources in OBS (right-click → Refresh) to see changes.
+
+   Palette is pulled from the logo: sand #D0BF93 + blue #2E6792.
+   Fonts are bundled in brand/fonts so OBS never needs the internet.
    ───────────────────────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap');
+@font-face { font-family: 'Fraunces'; font-style: italic; font-weight: 900; src: url('fonts/fraunces-latin-900-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Oswald'; font-weight: 500; src: url('fonts/oswald-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Oswald'; font-weight: 600; src: url('fonts/oswald-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 400; src: url('fonts/inter-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 600; src: url('fonts/inter-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 700; src: url('fonts/inter-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 800; src: url('fonts/inter-latin-800-normal.woff2') format('woff2'); }
 
 :root {
-  /* Core palette (placeholders — replace with your brand colors) */
-  --brand-primary: #ff6b4a;   /* main accent: highlights, active section, REC */
-  --brand-secondary: #4fd1c5; /* second accent: progress, vote option B */
-  --brand-tertiary: #ffd166;  /* small highlights, winner badges */
+  /* Core palette */
+  --brand-primary: #2e6792;       /* logo blue: titles, active states, bars */
+  --brand-on-primary: #efe6cc;    /* text/icons sitting on blue */
+  --brand-secondary: #a48f5c;     /* deep sand: second vote option, done states */
+  --brand-tertiary: #b5402a;      /* rust "stamp" accent: winner badge, highlights */
+  --brand-tint: rgba(46, 103, 146, 0.12); /* soft blue wash for chips/pills */
 
   /* Surfaces */
-  --brand-bg: #111014;        /* full-screen scene background */
-  --brand-bg-2: #1c1a22;      /* gradient partner for the background */
-  --brand-panel: rgba(17, 16, 20, 0.78); /* card fill over camera/DAW */
-  --brand-panel-border: rgba(255, 255, 255, 0.10);
+  --brand-bg: #d0bf93;            /* logo sand: full-screen scenes */
+  --brand-bg-2: #c2ad7c;          /* darker sand for vignette/gradient */
+  --brand-panel: rgba(228, 216, 184, 0.95); /* paper card over camera/DAW */
+  --brand-panel-border: rgba(46, 103, 146, 0.30);
+  --brand-shadow: 0 18px 44px rgba(45, 34, 12, 0.30);
 
   /* Text */
-  --brand-ink: #f6f1e9;
-  --brand-ink-dim: rgba(246, 241, 233, 0.62);
+  --brand-ink: #1f4a6e;           /* deep blue — readable body text on sand */
+  --brand-ink-dim: rgba(31, 74, 110, 0.68);
 
   /* Status */
-  --brand-rec: #ff3b3b;
+  --brand-rec: #b5402a;
 
   /* Type */
-  --brand-font-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --brand-font-display: 'Fraunces', Georgia, serif;          /* echoes CREATIVE */
+  --brand-display-style: italic;
+  --brand-display-weight: 900;
+  --brand-font-label: 'Oswald', 'Arial Narrow', sans-serif;  /* echoes BEEN DEAD */
   --brand-font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --brand-font-mono: 'JetBrains Mono', Menlo, monospace;
 
-  /* Shape */
-  --brand-radius: 28px;
-  --brand-radius-sm: 14px;
-  --brand-blur: 18px;         /* frosted-glass strength on cards; 0 = solid */
-  --brand-grain: 0.07;        /* film grain on full-screen scenes; 0 = off */
+  /* Shape & texture */
+  --brand-radius: 22px;
+  --brand-radius-sm: 12px;
+  --brand-blur: 0px;              /* frosted glass off — solid paper cards */
+  --brand-grain: 0.10;            /* paper grain on full-screen scenes; 0 = off */
 }

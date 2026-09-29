@@ -12,22 +12,22 @@
     .top { display: flex; align-items: center; gap: 16px; }
     .rec {
       display: none; align-items: center; gap: 10px;
-      font-family: var(--brand-font-mono); font-weight: 700; font-size: 22px;
+      font-family: var(--brand-font-label); font-weight: 700; font-size: 22px;
       letter-spacing: 0.12em; color: var(--brand-rec);
     }
     .rec.on { display: flex; }
     .rec i { width: 16px; height: 16px; border-radius: 50%; background: var(--brand-rec); animation: pulse 1.4s infinite; }
     .stage { color: var(--brand-primary); }
-    .timer { font-family: var(--brand-font-mono); font-size: 26px; font-weight: 700; color: var(--brand-ink-dim); }
+    .timer { font-family: var(--brand-font-label); font-size: 28px; font-weight: 600; color: var(--brand-ink); font-variant-numeric: tabular-nums; }
 
     .middle { display: flex; align-items: baseline; gap: 18px; min-width: 0; }
-    .song { font-size: 58px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-    .version { flex: none; font-family: var(--brand-font-mono); font-size: 22px; color: var(--brand-ink-dim); }
+    .song { font-size: 58px; line-height: 1.2; padding: 0 6px 4px 0; margin-bottom: -8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .version { flex: none; font-family: var(--brand-font-label); font-size: 22px; color: var(--brand-ink-dim); }
     .meta { margin-left: auto; flex: none; display: flex; gap: 8px; }
     .chip {
-      font-family: var(--brand-font-mono); font-size: 20px; font-weight: 700;
+      font-family: var(--brand-font-label); font-size: 22px; font-weight: 600; letter-spacing: 0.04em;
       padding: 4px 12px; border-radius: 999px;
-      background: rgba(255, 255, 255, 0.07); border: 1px solid var(--brand-panel-border);
+      background: var(--brand-tint); color: var(--brand-ink);
     }
 
     .sections { display: flex; gap: 8px; overflow: hidden; }
@@ -36,10 +36,10 @@
       font-size: 21px; font-weight: 600; padding: 7px 16px; border-radius: 999px;
       color: var(--brand-ink-dim); border: 1px solid var(--brand-panel-border);
     }
-    .sec.done { color: var(--brand-ink); background: color-mix(in srgb, var(--brand-secondary) 22%, transparent); border-color: transparent; }
-    .sec.done::before { content: '✓'; color: var(--brand-secondary); font-weight: 800; }
-    .sec.active { color: #111; background: var(--brand-primary); border-color: transparent; }
-    .sec.active::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: #111; animation: pulse 1.4s infinite; }
+    .sec.done { color: var(--brand-ink); background: var(--brand-tint); border-color: transparent; }
+    .sec.done::before { content: '✓'; color: var(--brand-primary); font-weight: 800; }
+    .sec.active { color: var(--brand-on-primary); background: var(--brand-primary); border-color: transparent; }
+    .sec.active::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--brand-on-primary); animation: pulse 1.4s infinite; }
   </style>
 </head>
 <body>

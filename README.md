@@ -16,7 +16,7 @@ No installs beyond OBS: the panel and overlays talk to each other through OBS's
 built-in WebSocket server.
 
 ```
-brand/        brand.css (your colors + fonts), logo.png (optional, add your own)
+brand/        brand.css (colors + fonts), logos, bundled fonts
 overlays/     browser-source pages + config.js (OBS WebSocket settings)
 control/      panel.html — the control panel
 docs/         SETUP.md — full Mac setup guide (stream key, cameras, audio)
@@ -65,11 +65,22 @@ its eye icon while arranging to see where TikTok's UI will cover the video.
 1300 ─ 1920   Chat area — fine for a face cam, not for text
 ```
 
-## Re-skinning with your brand
+## Branding (Been Dead Creative)
 
-Edit `brand/brand.css`: swap the hex values, set your fonts (any Google Font
-works) and drop a `logo.png` into `brand/`. In OBS, right-click a browser source
-→ *Refresh* (or restart OBS) to see the change everywhere.
+Everything is styled from `brand/brand.css`, using colors taken from the logo:
+**sand `#D0BF93`** and **blue `#2E6792`**, with deep blue `#1F4A6E` for body
+text and a rust `#B5402A` for the REC light and winner badges.
+
+- **Fonts** (bundled in `brand/fonts`, open-licensed, no internet needed):
+  *Fraunces Black Italic* for titles (echoes CREATIVE), *Oswald* for labels and
+  numbers (echoes BEEN DEAD), and *Inter* for body text.
+- **Logo:** `brand/logo.png` (blue) and `brand/logo-light.png` (cream, for
+  dark or blue backgrounds). Both have transparent backgrounds.
+- **Style:** full-screen scenes are sand "paper" with grain and a thin blue
+  print frame. Overlays are cream paper cards.
+
+To tweak it, edit the hex values or fonts in `brand/brand.css`. Then in OBS,
+right-click a browser source → *Refresh* (or restart OBS).
 
 ## Previewing overlays without OBS
 
