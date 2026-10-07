@@ -7,30 +7,32 @@
 //
 //     0 ─ 180   TikTok top bar          (keep text out)
 //   200 ─ 420   Session card
-//   450 ─ 1300  Main content: DAW / overhead cam / lyrics / vote
-//  1300 ─ 1920  Chat area — fine for a face cam, not for text
+//   450 ─ 1300  Main content: DAW / lyrics / vote
+//  1300 ─ 1920  Chat area — fine for camera, not for text
+//
+// One-camera setup: every scene uses the same "Camera" source (phone or GoPro).
 (function (global) {
-  const FACE = 'Face Cam (Phone)';
-  const OVERHEAD = 'Overhead Cam (GoPro)';
+  const CAMERA = 'Camera';
   const SCREEN = 'Ableton Screen';
 
   const ov = (name, file, x, y, w, h) => ({ type: 'browser', name: 'SL · ' + name, file, x, y, w, h });
-  const cam = (name, x, y, w, h) => ({ type: 'camera', name, x, y, w, h });
+  const cam = (x, y, w, h) => ({ type: 'camera', name: CAMERA, x, y, w, h });
   const screen = (x, y, w, h) => ({ type: 'screen', name: SCREEN, x, y, w, h });
 
   const backdrop = ov('Backdrop', 'backdrop.html', 0, 0, 1080, 1920);
   const card = ov('Session Card', 'session-card.html', 40, 200, 1000, 220);
-  const faceBottom = cam(FACE, 0, 1300, 1080, 620);
+  const camFull = cam(0, 0, 1080, 1920);
+  const camBottom = cam(0, 1300, 1080, 620);
 
   // Items are listed bottom → top (first item is furthest back).
   const SCENES = [
     { name: '1 · Starting Soon', items: [ov('Starting Soon', 'starting-soon.html', 0, 0, 1080, 1920)] },
-    { name: '2 · Talk', items: [backdrop, cam(FACE, 0, 0, 1080, 1920), card] },
-    { name: '3 · Writing', items: [backdrop, cam(FACE, 0, 0, 1080, 820), ov('Lyric Pad', 'lyric-pad.html', 40, 830, 1000, 470)] },
-    { name: '4 · DAW Focus', items: [backdrop, screen(0, 450, 1080, 850), faceBottom, card] },
-    { name: '5 · Instrument', items: [backdrop, cam(OVERHEAD, 0, 450, 1080, 650), faceBottom, card, ov('Keys', 'keys.html', 40, 1105, 1000, 190)] },
-    { name: '6 · Playback', items: [backdrop, faceBottom, ov('Now Playing', 'now-playing.html', 40, 300, 1000, 560)] },
-    { name: '7 · Vote', items: [backdrop, faceBottom, card, ov('A/B Vote', 'vote.html', 40, 450, 1000, 640)] },
+    { name: '2 · Talk', items: [backdrop, camFull, card] },
+    { name: '3 · Writing', items: [backdrop, cam(0, 0, 1080, 820), ov('Lyric Pad', 'lyric-pad.html', 40, 830, 1000, 470)] },
+    { name: '4 · DAW Focus', items: [backdrop, screen(0, 450, 1080, 850), camBottom, card] },
+    { name: '5 · Instrument', items: [backdrop, camFull, card, ov('Keys', 'keys.html', 40, 1105, 1000, 190)] },
+    { name: '6 · Playback', items: [backdrop, camBottom, ov('Now Playing', 'now-playing.html', 40, 300, 1000, 560)] },
+    { name: '7 · Vote', items: [backdrop, camBottom, card, ov('A/B Vote', 'vote.html', 40, 450, 1000, 640)] },
     { name: '8 · BRB', items: [ov('BRB', 'brb.html', 0, 0, 1080, 1920)] },
     { name: '9 · Ending', items: [ov('Ending', 'ending.html', 0, 0, 1080, 1920)] },
   ];
@@ -46,7 +48,7 @@
     const { inputKinds } = await bus.request('GetInputKindList', { unversioned: false });
     const cameraKind = CAMERA_KINDS.find((k) => inputKinds.includes(k));
     const screenKind = SCREEN_KINDS.find((k) => inputKinds.includes(k));
-    if (!cameraKind) log('⚠ No camera input type found — add cameras by hand.');
+    if (!cameraKind) log('⚠ No camera input type found — add the camera by hand.');
     if (!screenKind) log('⚠ No screen capture input type found — add Ableton capture by hand.');
 
     try {
@@ -70,7 +72,7 @@
         await addItem(bus, scene.name, item, { cameraKind, screenKind, overlaysBaseUrl, log });
       }
     }
-    log('Done. Pick your devices: double-click each camera / screen source in OBS.');
+    log('Done. Pick your devices: double-click "Camera" and "Ableton Screen" in OBS.');
   }
 
   async function addItem(bus, sceneName, item, ctx) {

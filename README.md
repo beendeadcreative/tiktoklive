@@ -32,8 +32,8 @@ docs/         SETUP.md — full Mac setup guide (stream key, cameras, audio)
 3. In the panel, open **OBS connection → Build scenes in OBS**. This sets the
    canvas to 1080 × 1920 and creates scenes `1 · Starting Soon` … `9 · Ending`
    with all overlays placed.
-4. In OBS, double-click **Face Cam (Phone)**, **Overhead Cam (GoPro)** and
-   **Ableton Screen** and pick the right device or display. Then crop the
+4. In OBS, double-click **Camera** and **Ableton Screen** and pick your camera
+   (phone or GoPro) and display. Then crop the
    Ableton capture to the part of the screen you want (hold ⌥ Option and drag
    an edge).
 5. Add your audio sources (see [docs/SETUP.md](docs/SETUP.md#audio-ableton--obs)).
@@ -41,17 +41,21 @@ docs/         SETUP.md — full Mac setup guide (stream key, cameras, audio)
 Re-running *Build scenes* is safe. It only adds what's missing and never moves
 anything you've rearranged.
 
+> **Already built the old two-camera version?** In OBS, choose **Scene Collection
+> → New**, give it a name, then click *Build scenes* again. You get the
+> one-camera layout without leftover sources.
+
 ## The scenes
 
 | Key | Scene | Use it for |
 |---|---|---|
 | 1 | Starting Soon | Countdown, tonight's plan, the song on the bench |
-| 2 | Talk | Full-screen face cam + session card |
-| 3 | Writing | Face cam on top, live lyric pad below |
-| 4 | DAW Focus | Ableton in the middle, face cam at the bottom |
-| 5 | Instrument | GoPro overhead + on-screen keys/chords, face cam at the bottom |
-| 6 | Playback | Big "now playing" card for first listens (add a visualizer below it) |
-| 7 | Vote | A/B vote: snares, hooks, mixes, titles |
+| 2 | Talk | Full-screen camera + session card |
+| 3 | Writing | Camera on top, live lyric pad below |
+| 4 | DAW Focus | Ableton in the middle, camera at the bottom |
+| 5 | Instrument | Full-screen camera + on-screen keys/chords from your MIDI keyboard |
+| 6 | Playback | Big "now playing" card for first listens, camera at the bottom |
+| 7 | Vote | A/B vote (snares, hooks, mixes, titles), camera at the bottom |
 | 8 | BRB | Break screen with a custom message |
 | 9 | Ending | Recap of the session + next stream time |
 
@@ -61,8 +65,8 @@ its eye icon while arranging to see where TikTok's UI will cover the video.
 ```
    0 ─  180   TikTok top bar          (keep text out)
  200 ─  420   Session card
- 450 ─ 1300   Main content: DAW / overhead cam / lyrics / vote
-1300 ─ 1920   Chat area — fine for a face cam, not for text
+ 450 ─ 1300   Main content: DAW / lyrics / vote
+1300 ─ 1920   Chat area — fine for the camera, not for text
 ```
 
 ## Branding (Been Dead Creative)

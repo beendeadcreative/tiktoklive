@@ -1,4 +1,4 @@
-# Setup guide (macOS · Ableton Live 12 · phone + GoPro HERO9)
+# Setup guide (macOS · Ableton Live 12 · one camera)
 
 ## 1. Getting on TikTok LIVE from OBS
 
@@ -38,29 +38,36 @@ gets one, so check first:
 **Settings → Audio**: sample rate **48 kHz**. Set Ableton to 48 kHz too, so
 nothing gets resampled and drifts.
 
-## 3. Cameras
+## 3. Camera (one-camera setup)
 
-### Phone → face cam
+The template uses a single source called **Camera** in every scene. Use
+whichever camera you have set up. Since it's the only camera, aim it to show
+**you and your hands/keys**. A slightly high angle from the front works well
+for talking, writing and playing.
+
+### If it's your phone
 - **iPhone:** macOS *Continuity Camera* makes it show up as a normal camera
   (iPhone and Mac signed into the same Apple ID, Wi-Fi and Bluetooth on). Pick
-  it in **Face Cam (Phone)**. Mount it vertically, and use a wired USB connection
-  if the picture drops out.
+  it in **Camera**. Use a wired USB connection if the picture drops out.
 - **Android:** use an app like **Camo** or **DroidCam**, which install a macOS
   camera driver.
-- Film vertically if you can: the Talk scene uses a full 9:16 frame, so a
-  landscape camera gets cropped heavily.
+- Mount the phone **vertically**. The Talk and Instrument scenes are a full 9:16
+  frame, so a landscape camera gets cropped heavily.
 
-### GoPro HERO9 → overhead instrument cam
+### If it's the GoPro HERO9
 - The simplest option is **webcam mode** over USB-C with the free **GoPro Webcam**
   desktop app. The HERO9 needs recent firmware. Pick *GoPro Webcam* in
-  **Overhead Cam (GoPro)**.
+  **Camera**.
 - The more reliable option is the **Media Mod's micro-HDMI out** into a cheap USB
   HDMI capture card. It has less lag and no app, and it's the better choice for
   2-hour streams.
 - **Heat:** the HERO9 runs hot on long sessions. Take the battery out and run it
   on USB power, and keep the battery door open or buy the vented door.
-- The wide lens is great for keys and pads from above. Use **Linear** lens mode
-  if it's available, so the keyboard doesn't bow.
+- Use **Linear** lens mode if it's available, to cut the fisheye bend.
+
+### Adding a second camera later
+Add another video source in OBS and drop it into whichever scenes you want. The
+control panel and overlays don't care how many cameras you have.
 
 ### Ableton screen
 **Ableton Screen** is a macOS screen capture. Either capture the whole display
@@ -122,6 +129,6 @@ Use **BlackHole 16ch** (free) or **Loopback** (paid, easier):
 - [ ] Panel open in Chrome, green dot, MIDI enabled
 - [ ] Song, BPM, key and plan filled in; countdown started on *1 · Starting Soon*
 - [ ] Safe-zone guide hidden in every scene
-- [ ] Phone on Do Not Disturb (Continuity Camera shows notifications)
-- [ ] GoPro on USB power with the battery out
+- [ ] Camera framed with you and your keys in shot
+- [ ] Phone on Do Not Disturb (if it's the camera), or GoPro on USB power with the battery out
 - [ ] Record locally too (OBS **Start Recording**) to cut clips afterward
