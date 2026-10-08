@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1000 × 200 -->
+  <title>Game Card</title>
+  <link rel="stylesheet" href="../../overlays/lib/overlay.css">
+  <style>
+    body { width: 1000px; height: 200px; padding: 6px; }
+    .card { height: 100%; padding: 20px 28px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+    .top { display: flex; align-items: center; gap: 14px; }
+    .live { width: 14px; height: 14px; border-radius: 50%; background: var(--brand-rec); animation: pulse 1.4s infinite; }
+    .platform {
+      font-family: var(--brand-font-label); font-size: 20px; font-weight: 600; letter-spacing: 0.08em;
+      padding: 2px 10px; border-radius: 6px; background: var(--brand-primary); color: var(--brand-on-primary);
+    }
+    .timer { margin-left: auto; font-family: var(--brand-font-label); font-size: 28px; font-weight: 600; color: var(--brand-ink); font-variant-numeric: tabular-nums; }
+    .game { font-size: 62px; line-height: 1.2; padding: 0 6px 4px 0; margin-bottom: -6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .status { font-size: 24px; font-weight: 600; color: var(--brand-ink-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  </style>
+</head>
+<body>
+  <div class="card fade hidden" id="card">
+    <div class="top">
+      <div class="live"></div>
+      <div class="eyebrow">Now playing</div>
+      <div class="platform" id="platform"></div>
+      <div class="timer" id="timer"></div>
+    </div>
+    <div class="display game" id="game"></div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <script src="../../overlays/config.js"></script>
+  <script src="../../overlays/lib/obs-bus.js"></script>
+  <script src="../../overlays/lib/overlay.js"></script>
+  <script src="game-demo.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    StudioOverlay({
+      app: 'game-live',
+      demoState: GAME_DEMO,
+      render(s) {
+        $('card').classList.toggle('hidden', !s.game);
+        $('game').textContent = s.game || '';
+        $('platform').textContent = s.platform || '';
+        $('platform').style.display = s.platform ? '' : 'none';
+        $('status').textContent = s.status || '';
+      },
+      tick(s) {
+        $('timer').textContent = s.sessionStart ? StudioOverlay.clock(Date.now() - s.sessionStart) : '';
+      },
+    });
+  </script>
+</body>
+</html>

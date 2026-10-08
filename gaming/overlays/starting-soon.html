@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1080 × 1920 -->
+  <title>Starting Soon (Game)</title>
+  <link rel="stylesheet" href="../../overlays/lib/screen.css">
+  <style>
+    .countdown { font-family: var(--brand-font-label); font-size: 170px; font-weight: 600; line-height: 1; color: var(--brand-ink); font-variant-numeric: tabular-nums; }
+    .game-card { padding: 30px 34px; }
+    .game-card .display { font-size: 64px; margin-top: 10px; }
+    .game-card .meta { margin-top: 10px; font-size: 28px; font-weight: 600; color: var(--brand-ink-dim); }
+  </style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="safe">
+    <img class="logo" src="../../brand/logo.png" onerror="this.remove()" alt="">
+    <div class="handle" id="handle"></div>
+    <div class="display big">Starting<br>soon</div>
+    <div class="countdown" id="countdown"></div>
+    <div class="rule"></div>
+    <div class="sub" id="plan"></div>
+    <div class="card game-card" id="gameCard">
+      <div class="eyebrow">Tonight we're playing</div>
+      <div class="display" id="game"></div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </div>
+
+  <script src="../../overlays/config.js"></script>
+  <script src="../../overlays/lib/obs-bus.js"></script>
+  <script src="../../overlays/lib/overlay.js"></script>
+  <script src="game-demo.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    StudioOverlay({
+      app: 'game-live',
+      demoState: GAME_DEMO,
+      render(s) {
+        $('handle').textContent = s.handle || '';
+        $('plan').textContent = s.plan || '';
+        $('gameCard').style.display = s.game ? '' : 'none';
+        $('game').textContent = s.game || '';
+        $('meta').textContent = [s.platform, s.status].filter(Boolean).join('  ·  ');
+      },
+      tick(s) {
+        const left = (s.countdownTo || 0) - Date.now();
+        $('countdown').textContent = s.countdownTo ? (left > 0 ? StudioOverlay.clock(left) : 'Any second…') : '';
+      },
+    });
+  </script>
+</body>
+</html>

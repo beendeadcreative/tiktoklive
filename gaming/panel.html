@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Live Control</title>
+  <link rel="stylesheet" href="../control/panel.css">
+  <style>
+    .counter-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center; }
+    .counter-row b { font: 600 34px var(--brand-font-label); min-width: 56px; text-align: center; color: var(--brand-primary); }
+    .counter-row button { width: 52px; font-size: 22px; padding: 8px 0; }
+    .counter-row button.plus { background: var(--brand-primary); color: var(--brand-on-primary); border-color: transparent; }
+    kbd { font: 600 11px var(--brand-font-label); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--brand-panel-border); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Game Live</div>
+    <div class="status" id="status"><i></i><span>Connecting…</span></div>
+    <details class="conn">
+      <summary>OBS connection</summary>
+      <label>WebSocket URL <input id="obsUrl"></label>
+      <label>Password <input id="obsPassword" type="password" placeholder="blank if auth is off"></label>
+      <button id="reconnect">Save &amp; reconnect</button>
+      <button id="build" class="ghost">Build scenes in OBS</button>
+    </details>
+  </header>
+
+  <main>
+    <section class="wide">
+      <h2>Scenes <small>keys 1–7</small></h2>
+      <div class="scenes" id="scenes"><p class="muted">Connect to OBS to see scenes.</p></div>
+    </section>
+
+    <section>
+      <h2>Session</h2>
+      <div class="grid2">
+        <label class="span2">Game <input data-k="game" placeholder="Elden Ring"></label>
+        <label>Platform <input data-k="platform" placeholder="PS5"></label>
+        <label>Handle <input data-k="handle" placeholder="@you"></label>
+        <label class="span2">Status line <input data-k="status" placeholder="First playthrough · Limgrave"></label>
+      </div>
+      <div class="row">
+        <button id="timerStart">Start timer</button>
+        <button id="timerReset" class="ghost">Reset timer</button>
+        <span class="mono" id="timer"></span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Counters <small><kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> add one · hold <kbd>Shift</kbd> to subtract</small></h2>
+      <div id="counters"></div>
+      <p class="muted" style="margin:0;font-size:12px">Leave a name blank to hide that counter.</p>
+      <div class="row"><button id="countersReset" class="ghost">Reset all to 0</button></div>
+    </section>
+
+    <section>
+      <h2>Goal</h2>
+      <label>Goal <input data-k="goal.label" placeholder="Beat Margit · 10 wins · 1,000 likes"></label>
+      <div class="counter-row">
+        <label>Target <input data-k="goal.target" inputmode="numeric" placeholder="10"></label>
+        <button data-goal="-1">−</button>
+        <b id="goalCurrent">0</b>
+        <button data-goal="1" class="plus">+</button>
+      </div>
+      <p class="muted" style="margin:0;font-size:12px">Shown as a progress bar on the Gameplay scene. Clear the goal to hide it.</p>
+    </section>
+
+    <section>
+      <h2>Chat vote</h2>
+      <label>Question <input data-k="vote.question" placeholder="Which build do I run?"></label>
+      <div class="vote">
+        <div>
+          <label>Option A <input data-k="vote.a"></label>
+          <div class="count"><button data-vote="countA" data-d="-1">−</button><b id="countA">0</b><button data-vote="countA" data-d="1">+</button></div>
+        </div>
+        <div>
+          <label>Option B <input data-k="vote.b"></label>
+          <div class="count"><button data-vote="countB" data-d="-1">−</button><b id="countB">0</b><button data-vote="countB" data-d="1">+</button></div>
+        </div>
+      </div>
+      <div class="row">
+        <button id="voteShow" class="toggle">Show vote</button>
+        <button id="voteReveal" class="toggle">Reveal winner</button>
+        <button id="voteReset" class="ghost">Reset</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Full-screen scenes</h2>
+      <label>Starting soon — tonight's plan <input data-k="plan" placeholder="Blind run — chat picks my build"></label>
+      <div class="row">
+        <input id="countMin" type="number" min="1" value="5" class="short"> min
+        <button id="countStart">Start countdown</button>
+        <button id="countClear" class="ghost">Clear</button>
+      </div>
+      <label>BRB message <input data-k="brbText" placeholder="Grabbing a snack — back in 5"></label>
+      <label>Ending — recap <input data-k="recap" placeholder="Beat Margit on try 14"></label>
+      <label>Ending — next stream <input data-k="nextStream" placeholder="Friday 9pm ET — Stormveil Castle"></label>
+    </section>
+
+    <section class="wide">
+      <h2>Log</h2>
+      <pre id="log"></pre>
+    </section>
+  </main>
+
+  <script src="../overlays/config.js"></script>
+  <script src="../overlays/lib/obs-bus.js"></script>
+  <script src="../control/scenes.js"></script>
+  <script src="scenes.js"></script>
+  <script src="../control/panel-core.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

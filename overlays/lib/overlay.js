@@ -1,12 +1,12 @@
 // Shared plumbing for every overlay page.
 //
-//   StudioOverlay({ render(state), onNotes(notes), tick(state) })
+//   StudioOverlay({ render(state), onNotes(notes), tick(state), app, demoState })
 //
 // - Receives session state from the control panel through OBS.
 // - Caches the last state so a reloaded browser source isn't blank.
 // - Add #demo to the URL to preview with sample data (no OBS needed).
+// - Add ?app=game-live to the URL to listen to the gaming panel instead.
 (function (global) {
-  const CACHE_KEY = 'studio-live-overlay-state';
 
   const DEMO_STATE = {
     handle: '@yourhandle',
@@ -46,24 +46,26 @@
 
   const DEMO_NOTES = [54, 57, 61, 66];
 
-  function readCache() {
+  function readCache(key) {
     try {
-      return JSON.parse(localStorage.getItem(CACHE_KEY)) || null;
+      return JSON.parse(localStorage.getItem(key)) || null;
     } catch (e) {
       return null;
     }
   }
 
-  function writeCache(state) {
+  function writeCache(key, state) {
     try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      localStorage.setItem(key, JSON.stringify(state));
     } catch (e) {}
   }
 
-  function StudioOverlay({ render, onNotes, tick }) {
+  function StudioOverlay({ render, onNotes, tick, app, demoState }) {
+    app = new URLSearchParams(location.search).get('app') || app || 'studio-live';
+    const cacheKey = app + '-overlay-state';
     const demo = location.hash === '#demo';
     const cfg = global.STUDIO_CONFIG || {};
-    let state = demo ? DEMO_STATE : readCache();
+    let state = demo ? { ...DEMO_STATE, ...demoState } : readCache(cacheKey);
     if (demo) document.documentElement.classList.add('demo');
 
     const draw = () => {
@@ -76,11 +78,11 @@
     if (tick) setInterval(() => state && tick(state), 250);
     if (demo) return;
 
-    const bus = new ObsBus({ url: cfg.obsUrl, password: cfg.obsPassword });
+    const bus = new ObsBus({ url: cfg.obsUrl, password: cfg.obsPassword, app });
     bus.on('_ready', () => bus.send('hello'));
     bus.on('state', (s) => {
       state = s;
-      writeCache(s);
+      writeCache(cacheKey, s);
       draw();
     });
     if (onNotes) bus.on('notes', (notes) => onNotes(notes || []));

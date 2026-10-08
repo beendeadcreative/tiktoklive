@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1080 × 1920 -->
+  <title>Ending (Game)</title>
+  <link rel="stylesheet" href="../../overlays/lib/screen.css">
+  <style>
+    .big { font-size: 120px; }
+    .recap { padding: 28px 34px; }
+    .recap .sub { margin-top: 10px; font-size: 32px; }
+    .tally { display: flex; gap: 12px; margin-top: 16px; }
+    .tally div { flex: 1; padding: 10px 16px; border-radius: var(--brand-radius-sm); background: var(--brand-tint); }
+    .tally span { display: block; font-family: var(--brand-font-label); font-size: 20px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand-ink-dim); }
+    .tally b { font-family: var(--brand-font-label); font-size: 52px; font-weight: 600; color: var(--brand-primary); }
+    .next { padding: 26px 34px; border-left: 8px solid var(--brand-primary); }
+    .next .display { font-size: 46px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="safe">
+    <img class="logo" src="../../brand/logo.png" onerror="this.remove()" alt="">
+    <div class="display big">GG — thanks<br>for hanging</div>
+    <div class="card recap" id="recapCard">
+      <div class="eyebrow" id="recapTitle">Tonight</div>
+      <div class="sub" id="recap"></div>
+      <div class="tally" id="tally"></div>
+    </div>
+    <div class="card next" id="nextCard">
+      <div class="eyebrow">Next stream</div>
+      <div class="display" id="next"></div>
+    </div>
+    <div class="sub">Follow <b id="handle"></b> for the next run</div>
+  </div>
+
+  <script src="../../overlays/config.js"></script>
+  <script src="../../overlays/lib/obs-bus.js"></script>
+  <script src="../../overlays/lib/overlay.js"></script>
+  <script src="game-demo.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = StudioOverlay.esc;
+    StudioOverlay({
+      app: 'game-live',
+      demoState: GAME_DEMO,
+      render(s) {
+        const counters = (s.counters || []).filter((c) => c.label);
+        $('handle').textContent = s.handle || '';
+        $('recapTitle').textContent = s.game ? `Tonight in ${s.game}` : 'Tonight';
+        $('recapCard').style.display = s.recap || counters.length ? '' : 'none';
+        $('recap').textContent = s.recap || '';
+        $('recap').style.display = s.recap ? '' : 'none';
+        $('tally').innerHTML = counters.map((c) => `<div><span>${esc(c.label)}</span><b>${+c.value || 0}</b></div>`).join('');
+        $('nextCard').style.display = s.nextStream ? '' : 'none';
+        $('next').textContent = s.nextStream || '';
+      },
+    });
+  </script>
+</body>
+</html>

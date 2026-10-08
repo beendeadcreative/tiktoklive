@@ -1,186 +1,40 @@
-// Control panel: edits session state and pushes it to every overlay via OBS.
+// Music control panel: session card, song map, lyrics, vote, MIDI keys.
+// Connection, scenes, vote, countdown and timer live in panel-core.js.
 (function () {
-  const STATE_KEY = 'studio-live-panel-state';
-  const CONN_KEY = 'studio-live-panel-conn';
   const $ = (id) => document.getElementById(id);
 
-  const DEFAULT_STATE = {
-    handle: '@yourhandle',
-    song: '',
-    version: 'Demo v1',
-    bpm: '',
-    key: '',
-    timeSig: '4/4',
-    stage: 'Writing',
-    rec: false,
-    sessionStart: null,
-    sections: ['Intro', 'Verse 1', 'Pre-chorus', 'Chorus', 'Verse 2', 'Bridge', 'Outro'].map((label) => ({ label, status: 'todo' })),
-    lyrics: '',
-    vote: { active: false, question: '', a: '', b: '', countA: 0, countB: 0, reveal: false },
-    plan: '',
-    countdownTo: null,
-    brbText: '',
-    recap: '',
-    nextStream: '',
-  };
-
-  let state = load(STATE_KEY, DEFAULT_STATE);
-  state = { ...DEFAULT_STATE, ...state, vote: { ...DEFAULT_STATE.vote, ...(state.vote || {}) } };
-
-  function load(key, fallback) {
-    try {
-      return JSON.parse(localStorage.getItem(key)) || fallback;
-    } catch (e) {
-      return fallback;
-    }
-  }
-  function save(key, value) {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch (e) {}
-  }
-
-  function log(msg) {
-    const el = $('log');
-    el.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
-    el.scrollTop = el.scrollHeight;
-  }
-
-  // ── OBS connection ──────────────────────────────────────────
-  const cfg = window.STUDIO_CONFIG || {};
-  const conn = load(CONN_KEY, { url: cfg.obsUrl, password: cfg.obsPassword || '' });
-  $('obsUrl').value = conn.url || 'ws://127.0.0.1:4455';
-  $('obsPassword').value = conn.password || '';
-
-  let bus;
-  function connect() {
-    if (bus) {
-      clearTimeout(bus.retryTimer);
-      if (bus.ws) {
-        bus.ws.onclose = null;
-        bus.ws.close();
-      }
-    }
-    bus = new ObsBus({
-      url: $('obsUrl').value.trim(),
-      password: $('obsPassword').value,
-      subscriptions: ObsBus.SUB.General | ObsBus.SUB.Scenes,
-      onStatus: setStatus,
-    });
-    bus.on('_ready', () => {
-      log('Connected to OBS');
-      broadcast();
-      refreshScenes();
-    });
-    bus.on('hello', () => broadcast());
-    bus.on('obs:CurrentProgramSceneChanged', ({ sceneName }) => markLive(sceneName));
-    for (const evt of ['SceneCreated', 'SceneRemoved', 'SceneNameChanged', 'SceneListChanged']) {
-      bus.on('obs:' + evt, () => refreshScenes());
-    }
-    bus.connect();
-  }
-
-  function setStatus(status) {
-    const el = $('status');
-    const text = {
-      connecting: 'Connecting…',
-      connected: 'Connected to OBS',
-      disconnected: 'OBS not reachable — is OBS open with WebSocket enabled?',
-      'auth-failed': 'Wrong WebSocket password',
-    }[status] || status;
-    el.querySelector('span').textContent = text;
-    el.className = 'status ' + (status === 'connected' ? 'connected' : status === 'connecting' ? '' : 'error');
-  }
-
-  $('reconnect').onclick = () => {
-    save(CONN_KEY, { url: $('obsUrl').value.trim(), password: $('obsPassword').value });
-    connect();
-  };
-
-  $('build').onclick = async () => {
-    if (!confirm('Create the Studio Live scenes in the current OBS scene collection? Existing scenes/sources with the same names are left alone.')) return;
-    try {
-      await StudioScenes.buildScenes(bus, new URL('../overlays/', location.href).href, log);
-      refreshScenes();
-    } catch (err) {
-      log('✗ Build failed: ' + err.message);
-    }
-  };
-
-  // ── Scenes ──────────────────────────────────────────────────
-  // hotkeys[n] = scene switched by key n+1. Scenes named "3 · Something" claim
-  // their number; if none are numbered, keys follow the OBS list order.
-  let hotkeys = [];
-  async function refreshScenes() {
-    try {
-      const { scenes, currentProgramSceneName } = await bus.request('GetSceneList');
-      // obs-websocket numbers scenes bottom-up; sort to match the OBS list.
-      let names = scenes.sort((a, b) => b.sceneIndex - a.sceneIndex).map((s) => s.sceneName);
-      const numbered = names.filter((n) => /^[1-9]\s*·/.test(n)).sort();
-      names = [...numbered, ...names.filter((n) => !numbered.includes(n))];
-      hotkeys = [];
-      if (numbered.length) numbered.forEach((n) => (hotkeys[+n[0] - 1] ??= n));
-      else hotkeys = names.slice(0, 9);
-      $('scenes').innerHTML = '';
-      names.forEach((name) => {
-        const btn = document.createElement('button');
-        const key = hotkeys.indexOf(name);
-        btn.textContent = (key >= 0 ? `[${key + 1}]  ` : '') + name.replace(/^[1-9]\s*·\s*/, '');
-        btn.dataset.scene = name;
-        btn.onclick = () => switchScene(name);
-        $('scenes').appendChild(btn);
-      });
-      markLive(currentProgramSceneName);
-    } catch (err) {
-      log('Could not list scenes: ' + err.message);
-    }
-  }
-  function markLive(name) {
-    for (const btn of $('scenes').querySelectorAll('button')) btn.classList.toggle('live', btn.dataset.scene === name);
-  }
-  function switchScene(name) {
-    if (name) bus.request('SetCurrentProgramScene', { sceneName: name }).catch((err) => log(err.message));
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.target.matches('input, textarea, select') || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (/^[1-9]$/.test(e.key)) switchScene(hotkeys[+e.key - 1]);
+  const panel = StudioPanel({
+    app: 'studio-live',
+    title: 'Studio Live (music)',
+    layout: StudioScenes.MUSIC,
+    defaults: {
+      handle: '@yourhandle',
+      song: '',
+      version: 'Demo v1',
+      bpm: '',
+      key: '',
+      timeSig: '4/4',
+      stage: 'Writing',
+      rec: false,
+      sessionStart: null,
+      sections: ['Intro', 'Verse 1', 'Pre-chorus', 'Chorus', 'Verse 2', 'Bridge', 'Outro'].map((label) => ({ label, status: 'todo' })),
+      lyrics: '',
+      vote: { active: false, question: '', a: '', b: '', countA: 0, countB: 0, reveal: false },
+      plan: '',
+      countdownTo: null,
+      brbText: '',
+      recap: '',
+      nextStream: '',
+    },
+    render(state) {
+      $('rec').classList.toggle('on', !!state.rec);
+      renderSections(state);
+    },
   });
-
-  // ── State → overlays ────────────────────────────────────────
-  let broadcastTimer;
-  function changed() {
-    save(STATE_KEY, state);
-    renderPanel();
-    clearTimeout(broadcastTimer);
-    broadcastTimer = setTimeout(broadcast, 60);
-  }
-  function broadcast() {
-    if (bus && bus.ready) bus.send('state', state);
-  }
-
-  // Simple fields: data-k="song" or data-k="vote.question"
-  for (const el of document.querySelectorAll('[data-k]')) {
-    const path = el.dataset.k.split('.');
-    const get = () => path.reduce((o, k) => o?.[k], state);
-    el.value = get() ?? '';
-    el.addEventListener('input', () => {
-      const obj = path.slice(0, -1).reduce((o, k) => o[k], state);
-      obj[path.at(-1)] = el.value;
-      changed();
-    });
-  }
+  const { state, changed } = panel;
 
   $('rec').onclick = () => {
     state.rec = !state.rec;
-    changed();
-  };
-  $('timerStart').onclick = () => {
-    state.sessionStart = Date.now();
-    changed();
-  };
-  $('timerReset').onclick = () => {
-    state.sessionStart = null;
     changed();
   };
 
@@ -228,55 +82,6 @@
     changed();
   };
 
-  // Vote
-  for (const btn of document.querySelectorAll('[data-vote]')) {
-    btn.onclick = () => {
-      const k = btn.dataset.vote;
-      state.vote[k] = Math.max(0, (+state.vote[k] || 0) + +btn.dataset.d);
-      changed();
-    };
-  }
-  $('voteShow').onclick = () => {
-    state.vote.active = !state.vote.active;
-    changed();
-  };
-  $('voteReveal').onclick = () => {
-    state.vote.reveal = !state.vote.reveal;
-    changed();
-  };
-  $('voteReset').onclick = () => {
-    Object.assign(state.vote, { countA: 0, countB: 0, reveal: false });
-    changed();
-  };
-
-  // Countdown
-  $('countStart').onclick = () => {
-    state.countdownTo = Date.now() + Math.max(1, +$('countMin').value || 5) * 60000;
-    changed();
-  };
-  $('countClear').onclick = () => {
-    state.countdownTo = null;
-    changed();
-  };
-
-  function renderPanel() {
-    $('rec').classList.toggle('on', !!state.rec);
-    $('voteShow').classList.toggle('on', !!state.vote.active);
-    $('voteShow').textContent = state.vote.active ? 'Hide vote' : 'Show vote';
-    $('voteReveal').classList.toggle('on', !!state.vote.reveal);
-    $('countA').textContent = state.vote.countA || 0;
-    $('countB').textContent = state.vote.countB || 0;
-    renderSections();
-  }
-  setInterval(() => {
-    $('timer').textContent = state.sessionStart ? StudioOverlayClock(Date.now() - state.sessionStart) : '';
-  }, 500);
-  function StudioOverlayClock(ms) {
-    const t = Math.floor(ms / 1000);
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${Math.floor(t / 3600)}:${pad(Math.floor((t % 3600) / 60))}:${pad(t % 60)}`;
-  }
-
   // ── MIDI ────────────────────────────────────────────────────
   const held = new Set();
   const sustained = new Set();
@@ -289,6 +94,7 @@
       const notes = [...new Set([...held, ...sustained])].sort((a, b) => a - b);
       $('chord').textContent = StudioMusic.chordName(notes);
       $('notes').textContent = notes.length ? notes.map(StudioMusic.noteName).join(' ') : 'No notes';
+      const bus = panel.bus();
       if (bus && bus.ready) bus.send('notes', notes);
     }, 25);
   }
@@ -308,7 +114,7 @@
       pedal = d2 >= 64;
       if (!pedal) sustained.clear();
     } else if (type === 0xc0) {
-      if ($('midiPc').checked && d1 < 9) switchScene(hotkeys[d1]);
+      if ($('midiPc').checked && d1 < 9) panel.switchScene(panel.hotkey(d1));
       return;
     } else {
       return;
@@ -318,7 +124,7 @@
 
   $('midiEnable').onclick = async () => {
     if (!navigator.requestMIDIAccess) {
-      log('Web MIDI is not available in this browser — open the panel in Chrome or Edge.');
+      panel.log('Web MIDI is not available in this browser — open the panel in Chrome or Edge.');
       return;
     }
     try {
@@ -335,12 +141,9 @@
       access.onstatechange = list;
       $('midiEnable').textContent = 'MIDI on';
       $('midiEnable').classList.add('accent');
-      log(`MIDI enabled (${access.inputs.size} input${access.inputs.size === 1 ? '' : 's'})`);
+      panel.log(`MIDI enabled (${access.inputs.size} input${access.inputs.size === 1 ? '' : 's'})`);
     } catch (err) {
-      log('MIDI permission denied: ' + err.message);
+      panel.log('MIDI permission denied: ' + err.message);
     }
   };
-
-  renderPanel();
-  connect();
 })();

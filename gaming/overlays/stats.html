@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1000 × 230. Live counters (deaths, wins…) + goal bar. -->
+  <title>Stats</title>
+  <link rel="stylesheet" href="../../overlays/lib/overlay.css">
+  <style>
+    body { width: 1000px; height: 230px; padding: 6px; }
+    .card { height: 100%; padding: 18px 26px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+    .counters { display: flex; gap: 12px; }
+    .counter {
+      flex: 1; min-width: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+      padding: 8px 18px; border-radius: var(--brand-radius-sm); background: var(--brand-tint);
+    }
+    .counter .label { font-family: var(--brand-font-label); font-size: 22px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand-ink-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .counter .value { font-family: var(--brand-font-label); font-size: 52px; font-weight: 600; line-height: 1; color: var(--brand-primary); font-variant-numeric: tabular-nums; }
+    .counter.bump .value { animation: bump 0.5s ease; }
+    @keyframes bump { 30% { transform: scale(1.35); color: var(--brand-tertiary); } }
+
+    .goal { display: flex; align-items: center; gap: 16px; }
+    .goal .label { flex: none; max-width: 46%; font-size: 24px; font-weight: 700; color: var(--brand-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar { flex: 1; height: 18px; border-radius: 999px; background: var(--brand-tint); overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--brand-primary); transition: width 0.6s cubic-bezier(.2, .8, .2, 1); }
+    .goal.done .bar i { background: var(--brand-tertiary); }
+    .goal .num { flex: none; font-family: var(--brand-font-label); font-size: 26px; font-weight: 600; color: var(--brand-ink); font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="card fade hidden" id="card">
+    <div class="counters" id="counters"></div>
+    <div class="goal" id="goal">
+      <div class="label" id="goalLabel"></div>
+      <div class="bar"><i id="goalBar"></i></div>
+      <div class="num" id="goalNum"></div>
+    </div>
+  </div>
+
+  <script src="../../overlays/config.js"></script>
+  <script src="../../overlays/lib/obs-bus.js"></script>
+  <script src="../../overlays/lib/overlay.js"></script>
+  <script src="game-demo.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = StudioOverlay.esc;
+    let last = [];
+
+    StudioOverlay({
+      app: 'game-live',
+      demoState: GAME_DEMO,
+      render(s) {
+        const counters = (s.counters || []).filter((c) => c.label);
+        const g = s.goal || {};
+        const hasGoal = !!g.label && +g.target > 0;
+        $('card').classList.toggle('hidden', !counters.length && !hasGoal);
+
+        $('counters').style.display = counters.length ? '' : 'none';
+        $('counters').innerHTML = counters
+          .map((c) => `<div class="counter"><span class="label">${esc(c.label)}</span><span class="value">${+c.value || 0}</span></div>`)
+          .join('');
+        // Pop the number that just changed.
+        counters.forEach((c, i) => {
+          if (last[i] !== undefined && last[i] !== +c.value) $('counters').children[i].classList.add('bump');
+        });
+        last = counters.map((c) => +c.value);
+
+        $('goal').style.display = hasGoal ? '' : 'none';
+        if (hasGoal) {
+          const cur = Math.max(0, +g.current || 0);
+          const target = +g.target;
+          $('goalLabel').textContent = g.label;
+          $('goalNum').textContent = `${cur} / ${target}`;
+          $('goalBar').style.width = Math.min(100, (cur / target) * 100) + '%';
+          $('goal').classList.toggle('done', cur >= target);
+        }
+      },
+    });
+  </script>
+</body>
+</html>

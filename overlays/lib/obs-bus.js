@@ -5,7 +5,6 @@
 // CustomEvent. No extra server or install is needed — just OBS 28+ with the
 // WebSocket server enabled.
 (function (global) {
-  const APP = 'studio-live';
   const SUB = { General: 1 << 0, Scenes: 1 << 2, Inputs: 1 << 3 };
 
   async function sha256b64(text) {
@@ -60,7 +59,10 @@
   }
 
   class ObsBus {
-    constructor({ url, password = '', subscriptions = SUB.General, onStatus } = {}) {
+    // `app` namespaces messages so the music and gaming templates never
+    // cross-talk, even when both are open against the same OBS.
+    constructor({ url, password = '', app = 'studio-live', subscriptions = SUB.General, onStatus } = {}) {
+      this.app = app;
       this.url = url || 'ws://127.0.0.1:4455';
       this.password = password;
       this.subscriptions = subscriptions;
@@ -124,7 +126,7 @@
       } else if (op === 5) {
         if (d.eventType === 'CustomEvent') {
           const data = d.eventData || {};
-          if (data.app === APP && data.from !== this.id) this._emit(data.type, data.payload);
+          if (data.app === this.app && data.from !== this.id) this._emit(data.type, data.payload);
         } else {
           this._emit('obs:' + d.eventType, d.eventData || {});
         }
@@ -164,7 +166,7 @@
     // Send a message to every other overlay / panel connected to OBS.
     send(type, payload) {
       return this.request('BroadcastCustomEvent', {
-        eventData: { app: APP, from: this.id, type, payload },
+        eventData: { app: this.app, from: this.id, type, payload },
       }).catch(() => {});
     }
   }
