@@ -7,8 +7,8 @@
 //   panel.log(msg), panel.switchScene(n), panel.hotkey(i), panel.bus()
 //
 // Handles: OBS connection, scene buttons + 1–9 hotkeys, "Build scenes",
-// data-k field binding, A/B vote, countdown and session timer (each only if
-// its elements exist on the page).
+// data-k field binding, song map (state.sections), A/B vote, countdown and
+// session timer (each only if its elements exist on the page).
 (function (global) {
   const $ = (id) => document.getElementById(id);
 
@@ -200,6 +200,53 @@
     onClick('voteReveal', () => (state.vote.reveal = !state.vote.reveal));
     onClick('voteReset', () => Object.assign(state.vote, { countA: 0, countB: 0, reveal: false }));
 
+    // Song map / chapters: click cycles todo → active → done
+    const NEXT_STATUS = { todo: 'active', active: 'done', done: 'todo' };
+    function renderSections() {
+      const wrap = $('sections');
+      wrap.innerHTML = '';
+      state.sections.forEach((sec, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'sec ' + sec.status;
+        btn.textContent = (sec.status === 'done' ? '✓ ' : '') + sec.label;
+        btn.onclick = () => {
+          if (NEXT_STATUS[sec.status] === 'active') state.sections.forEach((s) => s.status === 'active' && (s.status = 'done'));
+          sec.status = NEXT_STATUS[sec.status];
+          changed();
+        };
+        const x = document.createElement('span');
+        x.className = 'x';
+        x.textContent = '×';
+        x.title = 'Remove';
+        x.onclick = (e) => {
+          e.stopPropagation();
+          state.sections.splice(i, 1);
+          changed();
+        };
+        btn.appendChild(x);
+        wrap.appendChild(btn);
+      });
+    }
+    function addSection() {
+      const label = $('newSection').value.trim();
+      if (!label) return;
+      state.sections.push({ label, status: 'todo' });
+      $('newSection').value = '';
+      changed();
+    }
+    function nextSection() {
+      const i = state.sections.findIndex((s) => s.status === 'active');
+      if (i >= 0) state.sections[i].status = 'done';
+      const next = state.sections.findIndex((s, j) => j > i && s.status === 'todo');
+      if (next >= 0) state.sections[next].status = 'active';
+      changed();
+    }
+    if ($('sections')) {
+      $('addSection').onclick = addSection;
+      $('newSection').addEventListener('keydown', (e) => e.key === 'Enter' && addSection());
+      $('nextSection').onclick = nextSection;
+    }
+
     // Countdown
     onClick('countStart', () => (state.countdownTo = Date.now() + Math.max(1, +$('countMin').value || 5) * 60000));
     onClick('countClear', () => (state.countdownTo = null));
@@ -212,6 +259,7 @@
         $('countA').textContent = state.vote.countA || 0;
         $('countB').textContent = state.vote.countB || 0;
       }
+      if ($('sections')) renderSections();
       render(state);
     }
 
@@ -226,6 +274,7 @@
       changed,
       log,
       switchScene,
+      nextSection,
       hotkey: (i) => hotkeys[i],
       bus: () => bus,
     };

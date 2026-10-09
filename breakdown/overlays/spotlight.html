@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1000 × 230. "Now breaking down" lower third + Before/After badge. -->
+  <title>Spotlight</title>
+  <link rel="stylesheet" href="../../overlays/lib/overlay.css">
+  <style>
+    body { width: 1000px; height: 230px; padding: 6px; }
+    .card { height: 100%; padding: 20px 28px; display: flex; flex-direction: column; justify-content: center; gap: 6px; border-left: 10px solid var(--brand-primary); }
+    .top { display: flex; align-items: center; gap: 14px; }
+    .chapter { color: var(--brand-tertiary); }
+    .ab { margin-left: auto; display: flex; border-radius: 10px; overflow: hidden; border: 2px solid var(--brand-primary); }
+    .ab span {
+      font-family: var(--brand-font-label); font-size: 22px; font-weight: 600; letter-spacing: 0.1em;
+      padding: 4px 14px; color: var(--brand-primary); opacity: 0.45;
+    }
+    .ab span.on { background: var(--brand-primary); color: var(--brand-on-primary); opacity: 1; }
+    .ab.after span.on { background: var(--brand-tertiary); }
+    .title { font-size: 56px; line-height: 1.2; padding: 0 6px 4px 0; margin-bottom: -6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .detail { font-size: 26px; font-weight: 600; color: var(--brand-ink); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div class="card fade hidden" id="card">
+    <div class="top">
+      <div class="eyebrow">Now breaking down</div>
+      <div class="eyebrow chapter" id="chapter"></div>
+      <div class="ab" id="ab"><span data-ab="before">BEFORE</span><span data-ab="after">AFTER</span></div>
+    </div>
+    <div class="display title" id="title"></div>
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <script src="../../overlays/config.js"></script>
+  <script src="../../overlays/lib/obs-bus.js"></script>
+  <script src="../../overlays/lib/overlay.js"></script>
+  <script src="breakdown-demo.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    StudioOverlay({
+      app: 'breakdown-live',
+      demoState: BREAKDOWN_DEMO,
+      render(s) {
+        const sp = s.spotlight || {};
+        const sections = s.sections || [];
+        const active = sections.findIndex((x) => x.status === 'active');
+        // Falls back to the active chapter name when no spotlight title is set.
+        const title = sp.title || (active >= 0 ? sections[active].label : '');
+        $('card').classList.toggle('hidden', !title);
+        $('title').textContent = title;
+        $('detail').textContent = sp.detail || '';
+        $('detail').style.display = sp.detail ? '' : 'none';
+        $('chapter').textContent = active >= 0 ? `· ${active + 1} of ${sections.length}` : '';
+        $('ab').style.display = sp.ab ? '' : 'none';
+        $('ab').className = 'ab ' + (sp.ab || '');
+        for (const el of $('ab').children) el.classList.toggle('on', el.dataset.ab === sp.ab);
+      },
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Breakdown Live Control</title>
+  <link rel="stylesheet" href="../control/panel.css">
+  <style>
+    kbd { font: 600 11px var(--brand-font-label); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--brand-panel-border); }
+    .ab-row button { flex: 1; padding: 14px 10px; font-size: 16px; }
+    #abAfter.on { background: var(--brand-tertiary); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Breakdown Live</div>
+    <div class="status" id="status"><i></i><span>Connecting…</span></div>
+    <details class="conn">
+      <summary>OBS connection</summary>
+      <label>WebSocket URL <input id="obsUrl"></label>
+      <label>Password <input id="obsPassword" type="password" placeholder="blank if auth is off"></label>
+      <button id="reconnect">Save &amp; reconnect</button>
+      <button id="build" class="ghost">Build scenes in OBS</button>
+    </details>
+  </header>
+
+  <main>
+    <section class="wide">
+      <h2>Scenes <small>keys 1–8</small></h2>
+      <div class="scenes" id="scenes"><p class="muted">Connect to OBS to see scenes.</p></div>
+    </section>
+
+    <section>
+      <h2>Song</h2>
+      <div class="grid2">
+        <label class="span2">Song <input data-k="song" placeholder="Superpowers"></label>
+        <label>BPM <input data-k="bpm" inputmode="numeric"></label>
+        <label>Key <input data-k="key" placeholder="A minor"></label>
+        <label>Label on card <input data-k="stage" placeholder="Production breakdown"></label>
+        <label>Handle <input data-k="handle" placeholder="@you"></label>
+      </div>
+      <div class="row">
+        <button id="timerStart">Start timer</button>
+        <button id="timerReset" class="ghost">Reset timer</button>
+        <span class="mono" id="timer"></span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Chapters <small>click to cycle todo → active → done · <kbd>N</kbd> next</small></h2>
+      <div class="sections" id="sections"></div>
+      <div class="row">
+        <input id="newSection" placeholder="Add chapter (e.g. 808 slide)">
+        <button id="addSection">Add</button>
+        <button id="nextSection" class="accent">Next chapter →</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Spotlight <small>what you're showing right now</small></h2>
+      <label>Element <input data-k="spotlight.title" placeholder="Blank = use the current chapter name"></label>
+      <label>Detail (plugins, chain, trick) <input data-k="spotlight.detail" placeholder="Operator sine → Saturator → OTT 30% · sidechained to kick"></label>
+      <div class="row ab-row">
+        <button id="abBefore" class="toggle">BEFORE</button>
+        <button id="abAfter" class="toggle">AFTER</button>
+        <button id="abOff" class="ghost">Hide badge</button>
+      </div>
+      <p class="muted" style="margin:0;font-size:12px"><kbd>B</kbd> flips Before ↔ After. Great for dry/wet, raw/processed, demo/final.</p>
+    </section>
+
+    <section>
+      <h2>Chat question <small>shown on the Q&amp;A scene</small></h2>
+      <label>From <input data-k="question.user" placeholder="@username"></label>
+      <label>Question <textarea data-k="question.text" rows="3" placeholder="How do you keep the sub and kick from fighting?"></textarea></label>
+      <div class="row">
+        <button id="qShow" class="toggle">Show question</button>
+        <button id="qClear" class="ghost">Clear</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Full-screen scenes</h2>
+      <label>Starting soon — tonight's plan <input data-k="plan" placeholder="Breaking down every layer of Superpowers"></label>
+      <div class="row">
+        <input id="countMin" type="number" min="1" value="5" class="short"> min
+        <button id="countStart">Start countdown</button>
+        <button id="countClear" class="ghost">Clear</button>
+      </div>
+      <label>BRB message <input data-k="brbText" placeholder="Bouncing stems — back in 2"></label>
+      <label>Ending — recap <input data-k="recap" placeholder="Drums, the reese bass, vocal chain + mix bus"></label>
+      <label>Ending — next stream <input data-k="nextStream" placeholder="Thursday 8pm ET — making the remix"></label>
+    </section>
+
+    <section class="wide">
+      <h2>Log</h2>
+      <pre id="log"></pre>
+    </section>
+  </main>
+
+  <script src="../overlays/config.js"></script>
+  <script src="../overlays/lib/obs-bus.js"></script>
+  <script src="../control/scenes.js"></script>
+  <script src="scenes.js"></script>
+  <script src="../control/panel-core.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

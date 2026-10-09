@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 1000 × 230. Pinned chat question for Q&A. -->
+  <title>Chat Question</title>
+  <link rel="stylesheet" href="../../overlays/lib/overlay.css">
+  <style>
+    body { width: 1000px; height: 230px; padding: 6px; }
+    .card { height: 100%; padding: 22px 30px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+    .top { display: flex; align-items: center; gap: 12px; }
+    .user { font-family: var(--brand-font-label); font-size: 26px; font-weight: 600; letter-spacing: 0.04em; color: var(--brand-tertiary); }
+    .q { font-size: 44px; line-height: 1.2; padding-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div class="card fade hidden" id="card">
+    <div class="top"><div class="eyebrow">Chat asked</div><div class="user" id="user"></div></div>
+    <div class="display q" id="q"></div>
+  </div>
+
+  <script src="../../overlays/config.js"></script>
+  <script src="../../overlays/lib/obs-bus.js"></script>
+  <script src="../../overlays/lib/overlay.js"></script>
+  <script src="breakdown-demo.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    StudioOverlay({
+      app: 'breakdown-live',
+      demoState: BREAKDOWN_DEMO,
+      render(s) {
+        const q = s.question || {};
+        $('card').classList.toggle('hidden', !(q.show && q.text));
+        $('user').textContent = q.user || '';
+        $('q').textContent = q.text ? `“${q.text}”` : '';
+      },
+    });
+  </script>
+</body>
+</html>

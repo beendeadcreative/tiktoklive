@@ -1,11 +1,12 @@
 # Studio Live — TikTok LIVE templates (Been Dead Creative)
 
-This repo holds two OBS templates that share one brand and one engine:
+This repo holds three OBS templates that share one brand and one engine:
 
 | Template | Open this panel | Guide |
 |---|---|---|
 | 🎹 **Music**: writing and cutting demos in Ableton | `control/panel.html` | this page + [docs/SETUP.md](docs/SETUP.md) |
 | 🎮 **Gaming**: PS5 via capture card | `gaming/panel.html` | [gaming/README.md](gaming/README.md) |
+| 🎛 **Breakdown**: production breakdown of a finished song (full screen + camera) | `breakdown/panel.html` | [breakdown/README.md](breakdown/README.md) |
 
 Use a separate OBS **Scene Collection** for each (Scene Collection → New) so
 their scenes and 1–9 hotkeys don't mix. The stream key, audio and camera setup
@@ -35,6 +36,7 @@ brand/        brand.css (colors + fonts), logos, bundled fonts
 overlays/     music overlays, shared libs + config.js (OBS WebSocket settings)
 control/      panel.html — music control panel; shared panel + scene engine
 gaming/       PS5 gaming template (panel, overlays, guide)
+breakdown/    production breakdown template (panel, overlays, guide)
 docs/         SETUP.md — full Mac setup guide (stream key, cameras, audio)
 ```
 

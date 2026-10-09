@@ -1,5 +1,5 @@
-// Music control panel: session card, song map, lyrics, vote, MIDI keys.
-// Connection, scenes, vote, countdown and timer live in panel-core.js.
+// Music control panel: session card, lyrics, MIDI keys.
+// Connection, scenes, song map, vote, countdown and timer live in panel-core.js.
 (function () {
   const $ = (id) => document.getElementById(id);
 
@@ -28,57 +28,12 @@
     },
     render(state) {
       $('rec').classList.toggle('on', !!state.rec);
-      renderSections(state);
     },
   });
   const { state, changed } = panel;
 
   $('rec').onclick = () => {
     state.rec = !state.rec;
-    changed();
-  };
-
-  // Song map
-  const NEXT_STATUS = { todo: 'active', active: 'done', done: 'todo' };
-  function renderSections() {
-    const wrap = $('sections');
-    wrap.innerHTML = '';
-    state.sections.forEach((sec, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'sec ' + sec.status;
-      btn.textContent = (sec.status === 'done' ? '✓ ' : '') + sec.label;
-      btn.onclick = () => {
-        if (NEXT_STATUS[sec.status] === 'active') state.sections.forEach((s) => s.status === 'active' && (s.status = 'done'));
-        sec.status = NEXT_STATUS[sec.status];
-        changed();
-      };
-      const x = document.createElement('span');
-      x.className = 'x';
-      x.textContent = '×';
-      x.title = 'Remove';
-      x.onclick = (e) => {
-        e.stopPropagation();
-        state.sections.splice(i, 1);
-        changed();
-      };
-      btn.appendChild(x);
-      wrap.appendChild(btn);
-    });
-  }
-  function addSection() {
-    const label = $('newSection').value.trim();
-    if (!label) return;
-    state.sections.push({ label, status: 'todo' });
-    $('newSection').value = '';
-    changed();
-  }
-  $('addSection').onclick = addSection;
-  $('newSection').addEventListener('keydown', (e) => e.key === 'Enter' && addSection());
-  $('nextSection').onclick = () => {
-    const i = state.sections.findIndex((s) => s.status === 'active');
-    if (i >= 0) state.sections[i].status = 'done';
-    const next = state.sections.findIndex((s, j) => j > i && s.status === 'todo');
-    if (next >= 0) state.sections[next].status = 'active';
     changed();
   };
 

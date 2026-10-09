@@ -18,7 +18,7 @@
   // `fit: 'contain'` letterboxes a video source instead of cropping it.
   const overlay = (prefix) => (name, file, x, y, w, h) => ({ type: 'browser', name: `${prefix} · ${name}`, file, x, y, w, h });
   const video = (name) => (x, y, w, h, opts = {}) => ({ type: 'video', name, x, y, w, h, ...opts });
-  const screen = (name) => (x, y, w, h) => ({ type: 'screen', name, x, y, w, h });
+  const screen = (name) => (x, y, w, h, opts = {}) => ({ type: 'screen', name, x, y, w, h, ...opts });
 
   // ── Music template (control/panel.html) ────────────────────
   const ov = overlay('SL');

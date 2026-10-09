@@ -46,6 +46,27 @@
 
   const DEMO_NOTES = [54, 57, 61, 66];
 
+  // Per-template tweaks to the sample data, so shared overlays preview with
+  // the right content when opened with ?app=…#demo.
+  const APP_DEMOS = {
+    'breakdown-live': {
+      song: 'Superpowers',
+      version: '',
+      stage: 'Production breakdown',
+      bpm: 104,
+      key: 'A minor',
+      rec: false,
+      sections: ['Intro', 'Drums', 'Bass', 'Synths', 'Vocals', 'FX', 'Mix'].map((label, i) => ({
+        label,
+        status: i < 2 ? 'done' : i === 2 ? 'active' : 'todo',
+      })),
+      plan: 'Breaking down every layer of Superpowers',
+      brbText: 'Bouncing stems — back in 2',
+      recap: 'Drums, the reese bass, vocal chain + mix bus',
+      nextStream: 'Thursday 8pm ET — making the remix',
+    },
+  };
+
   function readCache(key) {
     try {
       return JSON.parse(localStorage.getItem(key)) || null;
@@ -65,7 +86,7 @@
     const cacheKey = app + '-overlay-state';
     const demo = location.hash === '#demo';
     const cfg = global.STUDIO_CONFIG || {};
-    let state = demo ? { ...DEMO_STATE, ...demoState } : readCache(cacheKey);
+    let state = demo ? { ...DEMO_STATE, ...APP_DEMOS[app], ...demoState } : readCache(cacheKey);
     if (demo) document.documentElement.classList.add('demo');
 
     const draw = () => {
