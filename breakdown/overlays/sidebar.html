@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- OBS browser source: 430 × 482 (landscape layout, under the camera). -->
+  <title>Breakdown Sidebar</title>
+  <link rel="stylesheet" href="../../overlays/lib/overlay.css">
+  <style>
+    body { width: 100vw; height: 100vh; padding: 6px; }
+    .card { height: 100%; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; }
+    .top { display: flex; align-items: center; gap: 10px; }
+    .top .eyebrow { font-size: 20px; }
+    .timer { margin-left: auto; font-family: var(--brand-font-label); font-size: 24px; font-weight: 600; color: var(--brand-ink); font-variant-numeric: tabular-nums; }
+    .song { font-size: 44px; line-height: 1.15; padding-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .meta { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      font-family: var(--brand-font-label); font-size: 20px; font-weight: 600; letter-spacing: 0.04em;
+      padding: 3px 12px; border-radius: 999px; background: var(--brand-tint); color: var(--brand-ink);
+    }
+    .chapters { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
+    .ch {
+      flex: none; display: flex; align-items: center; gap: 12px;
+      padding: 3px 12px; border-radius: 8px; font-size: 20px; font-weight: 600; color: var(--brand-ink-dim);
+    }
+    .ch .n { font-family: var(--brand-font-label); font-size: 18px; width: 22px; text-align: right; opacity: 0.8; }
+    .ch.done { color: var(--brand-ink); }
+    .ch.done .n::before { content: '✓'; color: var(--brand-primary); font-weight: 800; }
+    .ch.done .n span { display: none; }
+    .ch.active { background: var(--brand-primary); color: var(--brand-on-primary); }
+  </style>
+</head>
+<body>
+  <div class="card fade hidden" id="card">
+    <div class="top"><div class="eyebrow" id="stage"></div><div class="timer" id="timer"></div></div>
+    <div class="display song" id="song"></div>
+    <div class="meta" id="meta"></div>
+    <div class="chapters" id="chapters"></div>
+  </div>
+
+  <script src="../../overlays/config.js"></script>
+  <script src="../../overlays/lib/obs-bus.js"></script>
+  <script src="../../overlays/lib/overlay.js"></script>
+  <script src="breakdown-demo.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = StudioOverlay.esc;
+    StudioOverlay({
+      app: 'breakdown-live',
+      demoState: BREAKDOWN_DEMO,
+      render(s) {
+        $('card').classList.toggle('hidden', !s.song);
+        $('stage').textContent = s.stage || '';
+        $('song').textContent = s.song || '';
+        $('meta').innerHTML = [s.bpm && `${esc(s.bpm)} BPM`, s.key && esc(s.key)]
+          .filter(Boolean).map((t) => `<span class="chip">${t}</span>`).join('');
+        $('chapters').innerHTML = (s.sections || [])
+          .map((c, i) => `<div class="ch ${esc(c.status)}"><span class="n"><span>${i + 1}</span></span>${esc(c.label)}</div>`)
+          .join('');
+        // Keep the active chapter in view if the list is longer than the card.
+        const active = $('chapters').querySelector('.active');
+        if (active) $('chapters').scrollTop = active.offsetTop - $('chapters').offsetTop - 60;
+      },
+      tick(s) {
+        $('timer').textContent = s.sessionStart ? StudioOverlay.clock(Date.now() - s.sessionStart) : '';
+      },
+    });
+  </script>
+</body>
+</html>

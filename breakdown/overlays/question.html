@@ -2,11 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <!-- OBS browser source: 1000 × 230. Pinned chat question for Q&A. -->
+  <!-- OBS browser source: any size (1000 × 230 vertical, 1400 × 212 landscape). Pinned chat question for Q&A. -->
   <title>Chat Question</title>
   <link rel="stylesheet" href="../../overlays/lib/overlay.css">
   <style>
-    body { width: 1000px; height: 230px; padding: 6px; }
+    /* Fills whatever size the browser source is (1000 × 230 vertical, 1400 × 212 landscape). */
+    body { width: 100vw; height: 100vh; padding: 6px; }
     .card { height: 100%; padding: 22px 30px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
     .top { display: flex; align-items: center; gap: 12px; }
     .user { font-family: var(--brand-font-label); font-size: 26px; font-weight: 600; letter-spacing: 0.04em; color: var(--brand-tertiary); }

@@ -65,10 +65,10 @@
     }
 
     try {
-      await bus.request('SetVideoSettings', {
-        baseWidth: 1080, baseHeight: 1920, outputWidth: 1080, outputHeight: 1920,
-      });
-      log('✓ Canvas set to 1080 × 1920');
+      // Layouts are vertical (1080 × 1920) unless they say otherwise.
+      const { w, h } = layout.canvas || { w: 1080, h: 1920 };
+      await bus.request('SetVideoSettings', { baseWidth: w, baseHeight: h, outputWidth: w, outputHeight: h });
+      log(`✓ Canvas set to ${w} × ${h}`);
     } catch (err) {
       log('⚠ Could not set canvas (stop streaming/recording first): ' + err.message);
     }
@@ -81,7 +81,7 @@
         if (err.code !== 601) throw err; // 601 = already exists
         log('· Scene ' + scene.name + ' exists');
       }
-      for (const item of [...scene.items, layout.safeZones]) {
+      for (const item of [...scene.items, layout.safeZones].filter(Boolean)) {
         await addItem(bus, scene.name, item, { videoKind, screenKind, rootUrl, log, guide: item === layout.safeZones });
       }
     }

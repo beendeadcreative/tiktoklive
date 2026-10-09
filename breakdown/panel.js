@@ -7,7 +7,7 @@
   const panel = StudioPanel({
     app: 'breakdown-live',
     title: 'Breakdown Live',
-    layout: BREAKDOWN_LAYOUT,
+    layouts: { 'Landscape 16:9': BREAKDOWN_LANDSCAPE, 'Vertical 9:16': BREAKDOWN_LAYOUT },
     defaults: {
       handle: '@yourhandle',
       song: 'Superpowers',

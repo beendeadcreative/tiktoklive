@@ -1,9 +1,10 @@
-/* Full-canvas (1080 × 1920) scenes: backdrop, starting soon, BRB, ending. */
+/* Full-canvas scenes: backdrop, starting soon, BRB, ending.
+   Vertical (1080 × 1920) by default; adapts when the source is landscape. */
 @import url('overlay.css');
 
 html.demo body, body {
-  width: 1080px;
-  height: 1920px;
+  width: 100vw;
+  height: 100vh;
   position: relative;
   background:
     radial-gradient(130% 90% at 50% 40%, var(--brand-bg) 55%, var(--brand-bg-2) 100%);
@@ -68,3 +69,11 @@ body::after {
 .sub { font-size: 40px; line-height: 1.3; color: var(--brand-ink); font-weight: 600; }
 .sub b { color: var(--brand-primary); }
 .rule { height: 5px; width: 140px; border-radius: 2px; background: var(--brand-tertiary); }
+
+/* Landscape (1920 × 1080) canvas: content sits in a left column, logo big on the right. */
+@media (min-aspect-ratio: 1/1) {
+  .safe { top: 90px; bottom: 90px; left: 120px; right: 760px; gap: 22px; }
+  .safe .logo { position: fixed; right: 150px; top: 50%; transform: translateY(-50%); width: 520px; margin: 0; }
+  .big { font-size: 112px; }
+  .sub { font-size: 34px; }
+}

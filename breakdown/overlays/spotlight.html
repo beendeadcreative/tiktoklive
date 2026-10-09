@@ -2,11 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <!-- OBS browser source: 1000 × 230. "Now breaking down" lower third + Before/After badge. -->
+  <!-- OBS browser source: any size (1000 × 230 vertical, 1400 × 212 landscape). "Now breaking down" bar + Before/After badge. -->
   <title>Spotlight</title>
   <link rel="stylesheet" href="../../overlays/lib/overlay.css">
   <style>
-    body { width: 1000px; height: 230px; padding: 6px; }
+    /* Fills whatever size the browser source is (1000 × 230 vertical, 1400 × 212 landscape). */
+    body { width: 100vw; height: 100vh; padding: 6px; }
     .card { height: 100%; padding: 20px 28px; display: flex; flex-direction: column; justify-content: center; gap: 6px; border-left: 10px solid var(--brand-primary); }
     .top { display: flex; align-items: center; gap: 14px; }
     .chapter { color: var(--brand-tertiary); }

@@ -2,6 +2,7 @@
 // and the gaming panel (gaming/panel.html).
 //
 //   const panel = StudioPanel({ app, defaults, layout, title, render });
+//   (or `layouts: { 'Landscape 16:9': …, 'Vertical 9:16': … }` to offer a choice)
 //   panel.state          — live state object; mutate it, then call panel.changed()
 //   panel.changed()      — save + re-render + push state to overlays
 //   panel.log(msg), panel.switchScene(n), panel.hotkey(i), panel.bus()
@@ -31,7 +32,7 @@
     return `${Math.floor(t / 3600)}:${pad(Math.floor((t % 3600) / 60))}:${pad(t % 60)}`;
   }
 
-  function StudioPanel({ app, defaults, layout, title, render = () => {} }) {
+  function StudioPanel({ app, defaults, layout, layouts, title, render = () => {} }) {
     const STATE_KEY = app + '-panel-state';
     const CONN_KEY = 'studio-live-panel-conn'; // shared: same OBS for every template
 
@@ -98,11 +99,25 @@
       connect();
     };
 
+    // Templates with more than one layout get a picker next to "Build scenes".
+    const LAYOUT_KEY = app + '-panel-layout';
+    let pick;
+    if (layouts) {
+      pick = document.createElement('select');
+      pick.id = 'layoutPick';
+      for (const name of Object.keys(layouts)) pick.add(new Option(name, name));
+      pick.value = load(LAYOUT_KEY, null) in layouts ? load(LAYOUT_KEY, null) : Object.keys(layouts)[0];
+      pick.onchange = () => save(LAYOUT_KEY, pick.value);
+      $('build').before(pick);
+    }
+
     $('build').onclick = async () => {
-      if (!confirm(`Create the ${title} scenes in the current OBS scene collection? Existing scenes/sources with the same names are left alone.`)) return;
+      const chosen = layouts ? layouts[pick.value] : layout;
+      const label = layouts ? `${title} (${pick.value})` : title;
+      if (!confirm(`Create the ${label} scenes in the current OBS scene collection? Existing scenes/sources with the same names are left alone. Use a fresh scene collection for each layout.`)) return;
       try {
-        // Both panels live one folder below the repo root.
-        await StudioScenes.buildScenes(bus, new URL('../', location.href).href, log, layout);
+        // Panels live one folder below the repo root.
+        await StudioScenes.buildScenes(bus, new URL('../', location.href).href, log, chosen);
         refreshScenes();
       } catch (err) {
         log('✗ Build failed: ' + err.message);
