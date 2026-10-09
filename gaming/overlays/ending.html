@@ -31,7 +31,7 @@
       <div class="eyebrow">Next stream</div>
       <div class="display" id="next"></div>
     </div>
-    <div class="sub">Follow <b id="handle"></b> for the next run</div>
+    <div class="sub" id="follow">Follow <b id="handle"></b> <span id="followText">for the next run</span></div>
   </div>
 
   <script src="../../overlays/config.js"></script>
@@ -47,6 +47,8 @@
       render(s) {
         const counters = (s.counters || []).filter((c) => c.label);
         $('handle').textContent = s.handle || '';
+        $('followText').textContent = s.followText || 'for the next run';
+        $('follow').style.display = s.handle || s.followText ? '' : 'none';
         $('recapTitle').textContent = s.game ? `Tonight in ${s.game}` : 'Tonight';
         $('recapCard').style.display = s.recap || counters.length ? '' : 'none';
         $('recap').textContent = s.recap || '';

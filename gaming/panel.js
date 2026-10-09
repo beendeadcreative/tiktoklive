@@ -26,6 +26,7 @@
       brbText: '',
       recap: '',
       nextStream: '',
+      followText: '',
     },
     render(state) {
       state.counters.forEach((c, i) => ($('cv' + i).textContent = c.value || 0));

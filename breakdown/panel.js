@@ -26,6 +26,7 @@
       brbText: '',
       recap: '',
       nextStream: '',
+      followText: '',
     },
     render(state) {
       $('abBefore').classList.toggle('on', state.spotlight.ab === 'before');

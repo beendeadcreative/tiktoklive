@@ -25,7 +25,7 @@
       <div class="eyebrow">Next session</div>
       <div class="display" id="next"></div>
     </div>
-    <div class="sub">Follow <b id="handle"></b> for part two</div>
+    <div class="sub" id="follow">Follow <b id="handle"></b> <span id="followText">for part two</span></div>
   </div>
 
   <script src="config.js"></script>
@@ -36,6 +36,8 @@
     StudioOverlay({
       render(s) {
         $('handle').textContent = s.handle || '';
+        $('followText').textContent = s.followText || 'for part two';
+        $('follow').style.display = s.handle || s.followText ? '' : 'none';
         $('recapCard').style.display = s.recap ? '' : 'none';
         $('recap').textContent = s.recap || '';
         $('nextCard').style.display = s.nextStream ? '' : 'none';

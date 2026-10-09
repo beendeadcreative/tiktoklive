@@ -25,6 +25,7 @@
       brbText: '',
       recap: '',
       nextStream: '',
+      followText: '',
     },
     render(state) {
       $('rec').classList.toggle('on', !!state.rec);
