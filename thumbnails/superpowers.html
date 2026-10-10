@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--
+    YouTube thumbnail — 1280 × 720.
+    Variants: superpowers.html (sand) and superpowers.html#blue (inverted).
+    Optional: drop a photo of yourself next to this file as photo.png
+    (ideally a cut-out with a transparent background) and it replaces the
+    track lanes on the right.
+    Export: open in Chrome at 1280 × 720 and screenshot, or ask Claude to render.
+  -->
+  <title>Superpowers — Thumbnail</title>
+  <link rel="stylesheet" href="../brand/brand.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    :root {
+      --bg: var(--brand-bg);
+      --bg-2: var(--brand-bg-2);
+      --ink: var(--brand-primary);
+      --ink-2: var(--brand-ink);
+      --lane: var(--brand-primary);
+      --lane-2: #4f86b0;
+      --lane-3: var(--brand-secondary);
+      --paper: #e4d8b8;
+    }
+    body.blue {
+      --bg: #2e6792;
+      --bg-2: #1f4a6e;
+      --ink: #efe6cc;
+      --ink-2: #efe6cc;
+      --lane: #efe6cc;
+      --lane-2: #d0bf93;
+      --lane-3: #a48f5c;
+      --paper: #1f4a6e;
+    }
+    html, body { width: 1280px; height: 720px; overflow: hidden; }
+    body {
+      position: relative;
+      font-family: var(--brand-font-body);
+      background: radial-gradient(120% 100% at 30% 40%, var(--bg) 55%, var(--bg-2) 100%);
+      color: var(--ink);
+    }
+    /* paper grain */
+    body::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.12; mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    body.blue::after { mix-blend-mode: overlay; opacity: 0.18; }
+    .frame {
+      position: absolute; inset: 18px; border: 3px solid var(--ink); border-radius: 6px;
+      outline: 1px solid var(--ink); outline-offset: -10px; opacity: 0.5;
+    }
+
+    /* ── Left: words ───────────────────────────── */
+    .words { position: absolute; left: 66px; top: 64px; right: 60px; z-index: 2; }
+    .tag {
+      display: inline-block; font-family: var(--brand-font-label); font-weight: 600; font-size: 30px;
+      letter-spacing: 0.12em; padding: 6px 18px 5px; border-radius: 8px;
+      background: var(--brand-tertiary); color: #efe6cc; transform: rotate(-2deg);
+    }
+    .how {
+      margin-top: 22px; font-family: var(--brand-font-label); font-weight: 700; font-size: 78px;
+      letter-spacing: 0.04em; line-height: 1; text-transform: uppercase; color: var(--ink-2);
+    }
+    .title {
+      margin-top: 2px; margin-left: -8px; font-family: var(--brand-font-display); font-style: italic; font-weight: 900;
+      font-size: 178px; line-height: 1.08; letter-spacing: -0.02em; color: var(--ink);
+      text-shadow: 6px 6px 0 rgba(0, 0, 0, 0.12);
+      white-space: nowrap;
+    }
+    .sub {
+      margin-top: 10px; font-weight: 800; font-size: 42px; color: var(--ink-2);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .sub .rule { width: 70px; height: 6px; border-radius: 3px; background: var(--brand-tertiary); }
+
+    .logo { position: absolute; left: 70px; bottom: 46px; height: 92px; z-index: 2; }
+
+    /* ── Right: arrangement lanes (or your photo) ─ */
+    .lanes {
+      position: absolute; right: 64px; top: 54px; width: 430px; z-index: 1;
+      display: flex; flex-direction: column; gap: 8px; transform: rotate(3deg);
+    }
+    .lane { display: flex; align-items: center; gap: 10px; }
+    .lane b {
+      flex: none; width: 92px; font-family: var(--brand-font-label); font-weight: 600; font-size: 19px;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); text-align: right;
+    }
+    .lane .clips { flex: 1; display: flex; gap: 5px; height: 36px; }
+    .lane .clips i { flex: 1; border-radius: 6px; background: var(--lane); }
+    .lane .clips i.o { background: transparent; border: 2px dashed currentColor; opacity: 0.25; }
+    .lane:nth-child(2) .clips i:not(.o) { background: var(--lane-2); }
+    .lane:nth-child(3) .clips i:not(.o) { background: var(--lane-3); }
+    .lane:nth-child(4) .clips i:not(.o) { background: var(--lane-2); }
+    .lane .clips i.hot { background: var(--brand-tertiary) !important; box-shadow: 0 0 0 4px var(--paper); }
+    /* waveform over the vocal lane */
+    .lane .clips.wave { position: relative; }
+    .lane .clips.wave svg { position: absolute; inset: 4px 4px; width: calc(100% - 8px); height: calc(100% - 12px); }
+
+    .sticker {
+      position: absolute; right: 120px; bottom: 100px; z-index: 3; transform: rotate(-5deg);
+      display: flex; border-radius: 14px; overflow: hidden; border: 4px solid var(--ink-2);
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.18);
+      font-family: var(--brand-font-label); font-weight: 700; font-size: 40px; letter-spacing: 0.08em;
+    }
+    .sticker span { padding: 10px 22px 8px; }
+    .sticker .b { background: var(--paper); color: var(--ink-2); }
+    .sticker .a { background: var(--brand-tertiary); color: #efe6cc; }
+
+    #photo { display: none; position: absolute; right: 0; bottom: 0; height: 700px; z-index: 1; }
+    body.has-photo #photo { display: block; }
+    body.has-photo .lanes { display: none; }
+    body.has-photo .sticker { right: 40px; bottom: 40px; }
+  </style>
+</head>
+<body>
+  <div class="frame"></div>
+
+  <div class="words">
+    <div class="tag">PRODUCTION BREAKDOWN</div>
+    <div class="how">How I made</div>
+    <div class="title">Superpowers</div>
+    <div class="sub"><span class="rule"></span>every layer, start to finish</div>
+  </div>
+
+  <div class="lanes">
+    <div class="lane"><b>Drums</b><div class="clips"><i></i><i></i><i class="o"></i><i></i><i></i></div></div>
+    <div class="lane"><b>Bass</b><div class="clips"><i class="o"></i><i class="hot"></i><i></i><i></i><i class="o"></i></div></div>
+    <div class="lane"><b>Synths</b><div class="clips"><i></i><i class="o"></i><i></i><i></i><i></i></div></div>
+    <div class="lane"><b>Vocals</b><div class="clips wave"><i class="o"></i><i></i><i></i><i></i><i></i>
+      <svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0 20 L6 12 L12 28 L18 6 L24 33 L30 15 L36 25 L42 4 L48 36 L54 14 L60 26 L66 9 L72 31 L78 17 L84 23 L90 7 L96 34 L102 12 L108 28 L114 5 L120 35 L126 16 L132 24 L138 8 L144 32 L150 13 L156 27 L162 10 L168 30 L174 15 L180 25 L186 18 L192 22 L200 20" fill="none" stroke="#efe6cc" stroke-width="2.4" stroke-linejoin="round"/></svg>
+    </div></div>
+    <div class="lane"><b>FX</b><div class="clips"><i class="o"></i><i class="o"></i><i></i><i class="o"></i><i></i></div></div>
+  </div>
+
+  <div class="sticker"><span class="b">BEFORE</span><span class="a">AFTER</span></div>
+
+  <img class="logo" id="logo" src="../brand/logo.png" alt="">
+  <img id="photo" src="photo.png" alt="" onload="document.body.classList.add('has-photo')" onerror="this.remove()">
+
+  <script>
+    if (location.hash === '#blue') {
+      document.body.classList.add('blue');
+      document.getElementById('logo').src = '../brand/logo-light.png';
+    }
+  </script>
+</body>
+</html>
