@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--
+    Minimal YouTube thumbnail — 1280 × 720.
+    Variants: superpowers-minimal.html (sand) and #blue (inverted).
+    Edit the two lines of text below to reuse it for another song.
+  -->
+  <title>Superpowers — Minimal Thumbnail</title>
+  <link rel="stylesheet" href="../brand/brand.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    :root { --bg: var(--brand-bg); --ink: var(--brand-primary); --label: var(--brand-ink); }
+    body.blue { --bg: #2e6792; --ink: #efe6cc; --label: #efe6cc; }
+    html, body { width: 1280px; height: 720px; overflow: hidden; }
+    body { position: relative; background: var(--bg); color: var(--ink); }
+    /* faint paper grain */
+    body::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.08; mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    body.blue::after { mix-blend-mode: overlay; opacity: 0.14; }
+
+    .block { position: absolute; left: 96px; right: 96px; top: 50%; transform: translateY(-58%); }
+    .label {
+      display: flex; align-items: center; gap: 18px;
+      font-family: var(--brand-font-label); font-weight: 600; font-size: 34px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--label);
+    }
+    .label i { width: 56px; height: 5px; border-radius: 3px; background: var(--brand-tertiary); }
+    .title {
+      margin-top: 8px; margin-left: -10px;
+      font-family: var(--brand-font-display); font-style: italic; font-weight: 900;
+      font-size: 200px; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap;
+      display: inline-block; padding-right: 24px; /* room for the italic overhang */
+    }
+    .logo { position: absolute; left: 96px; bottom: 56px; height: 64px; opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="block">
+    <div class="label"><i></i>Production breakdown</div>
+    <div class="title">Superpowers</div>
+  </div>
+  <img class="logo" id="logo" src="../brand/logo.png" alt="">
+  <script>
+    if (location.hash === '#blue') {
+      document.body.classList.add('blue');
+      document.getElementById('logo').src = '../brand/logo-light.png';
+    }
+    // Shrink the title until it fits, so longer song names still work.
+    document.fonts.ready.then(() => {
+      const title = document.querySelector('.title');
+      const max = document.querySelector('.block').clientWidth;
+      let size = 200;
+      while (title.getBoundingClientRect().width > max && size > 60) title.style.fontSize = (size -= 4) + 'px';
+      document.body.dataset.ready = '1';
+    });
+  </script>
+</body>
+</html>
